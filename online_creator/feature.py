@@ -47,15 +47,16 @@ class Feature(object):
         feature_all = []
         for date in self.date_list:
             daily_feature = self.creatFeatureByDate(date)
+            print(len(daily_feature))
             feature_all.append(daily_feature)
-        
+
         return feature_all
 
     
     def creatFeatureByDate(self,date):
         feature = []
         for creator in self.feature_creator_list:
-            feature.append(creator.getFeatureByDate(date,self.stock_list,self.date_index_dict,self.inverse_date_index_dict))
+            feature = feature + creator.getFeatureByDate(date,self.stock_list,self.date_index_dict,self.inverse_date_index_dict)
 
         return feature
 
