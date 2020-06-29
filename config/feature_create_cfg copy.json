@@ -1,0 +1,38 @@
+{
+    "MODE":"daily",
+    "star":"2012-12-20",
+    "end":"2019-12-20",
+    "label_cfg":{
+    },
+    "feature_cfg":
+    {
+        "P":{
+            "var":[],
+            "return":[],
+            "high_d_close":[]
+        },
+        "v":{
+            "var":[],
+            "exchange":[]
+        },
+        "fin":{}
+    },
+    "intval_cfg":{},
+    "engine_cfg":{
+        "used":1,
+        "clip":1,
+        "clip_cfg":{
+            "max_value":1.1,
+            "clip_value":0.09
+        },
+        "nan_del":0,
+        "nan_del_cfg":
+        {
+            "X":1,
+            "x_fill":0.0,
+            "nan_fill_value":"nan",
+            "Y":1
+        }
+             
+    }
+}

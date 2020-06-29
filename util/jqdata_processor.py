@@ -8,9 +8,15 @@ def list2Dic(in_list):
     index_list = [i for i in range(len(in_list))]
     return dict(zip(in_list,index_list))
 
+def invert_dict(d):
+    return dict(zip(d.values(), d.keys()))
+
 def dateArr2List(date_arr):
     date_list = [pd.Timestamp(date) for date in date_arr]
     return date_list
+
+
+
 
 
 def dataframe2Arr(prince_info,stock_index_dict,date_index_dict=None):

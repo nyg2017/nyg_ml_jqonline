@@ -1,0 +1,32 @@
+{
+    "MODE":"daily",
+    "start":"2012-12-20",
+    "end":"2019-12-20",
+    "label_cfg":{
+    },
+    "feature_cfg":
+    {
+        "p":{
+            "var":[1,2,3,4,5],
+            "return":[1,2,3,4,5]
+        }
+    },
+    "intval_cfg":{},
+    "engine_cfg":{
+        "used":1,
+        "clip":1,
+        "clip_cfg":{
+            "max_value":1.1,
+            "clip_value":0.09
+        },
+        "nan_del":0,
+        "nan_del_cfg":
+        {
+            "X":1,
+            "x_fill":0.0,
+            "nan_fill_value":"nan",
+            "Y":1
+        }
+             
+    }
+}
