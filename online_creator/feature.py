@@ -1,6 +1,6 @@
 import sys
 if __name__ == "__main__":
-    sys.path.append("/Users/sumnap/github/nyg_ml_jqonline")
+    sys.path.append("/Users/tall100/github/nyg_ml_jqonline")
 
 import numpy as np
 import pandas as pd
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     import json
     from util.jq_init import login
     login()
-    with open("/Users/sumnap/github/nyg_ml_plus/DATA/ori_data/industry_list/sw_l3.json","r") as f:
+    with open("./DATA/ori_data/industry_list/sw_l3.json","r") as f:
         industry_list = json.load(f)
 
     feature_cfg = "./config/feature_create_cfg.json"
