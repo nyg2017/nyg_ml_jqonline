@@ -1,0 +1,5 @@
+{
+    "model":"lgb",
+    "model_cfg":"./config/lgb_cfg.json",
+    "feature_cfg":"./config/feature_create_cfg.json"
+}

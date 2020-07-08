@@ -1,6 +1,6 @@
 import sys
 if __name__ == "__main__":
-    sys.path.append("/Users/tall100/github/nyg_ml_jqonline")
+    sys.path.append("../nyg_ml_jqonline")
 
 import numpy as np
 import pandas as pd
@@ -47,18 +47,29 @@ class Feature(object):
         feature_all = []
         for date in self.date_list:
             daily_feature = self.creatFeatureByDate(date)
-            print(len(daily_feature))
+            
+            feature_all.append(np.array(daily_feature))
+
+        return np.concatenate(tuple(feature_all),axis= 0)
+
+    def createBatch(self,idx_list):
+        for idx in idx_list:
+            daily_feature = self.creatFeatureByDate(date)
+            
             feature_all.append(daily_feature)
-
-        return feature_all
-
+        
+        return np.concatenate(tuple(feature_all),axis= 0)
     
     def creatFeatureByDate(self,date):
         feature = []
         for creator in self.feature_creator_list:
-            feature = feature + creator.getFeatureByDate(date,self.stock_list,self.date_index_dict,self.inverse_date_index_dict)
+            feature_temp = creator.getFeatureByDate(date,self.stock_list,self.date_index_dict,self.inverse_date_index_dict)
 
-        return feature
+            feature_temp = np.concatenate(tuple(feature_temp),axis = -1)
+
+            feature.append(feature_temp)
+
+        return np.concatenate(tuple(feature),axis = 0)
 
     def checkFeature():
         for creator in self.feature_creator_list:
@@ -79,4 +90,5 @@ if __name__ == "__main__":
     stock_list = industry_list["L72"]["stocks_list"]
 
     f = Feature(feature_cfg,stock_list)
-    f.createFeatureAll()
+    feature = f.createFeatureAll()
+    print (feature.shape)
