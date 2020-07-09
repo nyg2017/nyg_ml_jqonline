@@ -91,4 +91,4 @@ if __name__ == "__main__":
 
     f = Feature(feature_cfg,stock_list)
     feature = f.createFeatureAll()
-    print (feature.shape)
+    print (feature)
