@@ -32,15 +32,11 @@ def train(train_cfg):
     model = build_model(model_name,model_cfg)
 
     feature_all = np.array(feature_creator.createFeatureAll())
-    #print (model)
     
     feature_all = np.nan_to_num(feature_all)
     label = feature_all[:,-1]
-    #print (label)
-    #label = np.array([np.nan])
-    print (np.isnan(label),label,type(label),np.nan_to_num(label))
-    print (label<1)
-    #print (feature_all.shape)
+
+    label = np.nan_to_num(label.astype(np.float))
     model.fit(feature_all,label)
 
 
