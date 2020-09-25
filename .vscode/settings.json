@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/Users/sumnap/anaconda3/envs/keras/bin/python"
+    "python.pythonPath": "/Users/sumnap/anaconda3/envs/ml/bin/python",
+    "python.autoComplete.extraPaths": ["/Users/sumnap/github/nyg_ml_jqonline"]
 }
