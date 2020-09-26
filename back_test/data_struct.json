@@ -19,6 +19,7 @@
                 "code":{
                     "transaction_price":123,
                     "transaction_num":-100,
+                    "transaction_fee":123.8
                 }
             },
             "index_state":{
@@ -31,7 +32,9 @@
     "target_hold_dict":{
         "target_code":{
             "market_price":3414,
-            "target_num":1234
+            "target_num":1234,
+            "target_percent":0.123
+
         }
     }
     

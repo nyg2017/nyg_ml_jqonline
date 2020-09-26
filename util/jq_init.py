@@ -4,7 +4,7 @@ import jqdatasdk as jq
 
 def login():
     print ("login JQDATA servering")
-    account = "18810932732"
+    account = "15210089516"
     password = "Ningyaguang1"
     jq.auth(account,password)
     print ("login successed!")    

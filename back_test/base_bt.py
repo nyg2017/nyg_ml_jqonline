@@ -7,6 +7,7 @@ if __name__ == "__main__":
 from back_test.employee.stocktrader import StockTrader
 from back_test.employee.bookkeeper import BookKeeper
 from back_test.employee.indextrader import IndexTrader
+from date_interface.jq_data import login
 
 class BaseBT(object):
     def __init__(self,capital,base_index,weight_mode,fee_rate,slide_point,start_date,end_date,trade_mode):
@@ -27,16 +28,22 @@ class BaseBT(object):
 
 
 if __name__ == "__main__":
-    import sys
-    sys.path.append("/Users/sumnap/github/nyg_ml_jqonline")
+    login()
     capital = 1000000
     base_index = ""
     weight_mode = ""
     fee_rate = 0.0005
     slide_point = 0.01
-    start_date = ""
-    end_date = ""
-    trade_mode = ""
+    start_date = "2015-01-05"
+    end_date = "2015-01-06"
+    trade_mode = "mean"
     total_position = 0.7
     bt = BaseBT(capital,base_index,weight_mode,fee_rate,slide_point,start_date,end_date,trade_mode)
-    bt.run(start_date,[],[],total_position)
+    stock_list = ['600362.XSHG','600360.XSHG','600361.XSHG']
+    rank = [0,1,2]
+    bt.run(start_date,stock_list,rank,total_position)
+    bt.run(end_date,stock_list,rank,total_position)
+    for k,v in bt.bookkeeper.account.items():
+        print (v['transaction_state'])
+        print (v['hold_state'])
+    #print (bt.bookkeeper.account)

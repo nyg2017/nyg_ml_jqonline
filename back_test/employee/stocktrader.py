@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import os
 from back_test.employee.positionspilitor import PositionSpilitor
+from date_interface.jq_data import *
+
 
 class StockTrader(object):
     def __init__(self,fee_rate,slide_point,bookkeeper,trade_mode):
@@ -9,7 +11,7 @@ class StockTrader(object):
         self.slide_point = slide_point
         self.trade_mode = trade_mode
         self.bookkeeper = bookkeeper
-        self.position_spilitor = PositionSpilitor(trade_mode)
+        self.position_spilitor = PositionSpilitor(trade_mode,bookkeeper)
 
 
     '''
@@ -21,15 +23,49 @@ class StockTrader(object):
         return target_hold_dict
     '''
 
+    def sell(self,target_code,target_info,last_hold_by_code):
+        last_aver_cost = last_hold_by_code['aver_cost']
+        last_hold_num = last_hold_by_code['hold_num']
+
+        sell_num =  last_hold_num - target_info['target_num']
+        sell_price = target_info['market_price']
+        
+        self_value = sell_price * sell_num 
+        trade_fee = self_value * self.fee
+
+        target_aver_cost = (last_aver_cost * last_hold_num - self_value + trade_fee)/(last_hold_num - sell_num)
+        self.bookkeeper.addNewHoldStateForCode(target_code,target_aver_cost,sell_price,target_info['target_num'] )
+        self.bookkeeper.addNewTransactionInfoForCode(target_code,sell_price,-sell_num,trade_fee)
+        self.bookkeeper.cash += (self_value - trade_fee)
+
+    def buy(self,target_code,target_info,last_hold_by_code):
+        last_aver_cost = last_hold_by_code['aver_cost']
+        last_hold_num = last_hold_by_code['hold_num']
+
+        buy_num = target_info['target_num'] - last_hold_num
+        buy_price = target_info['market_price']
+
+        buy_value = buy_num * buy_price
+        trade_fee = buy_value * self.fee
+
+        target_aver_cost = (last_aver_cost * last_hold_num + buy_value + trade_fee ) / (buy_num + last_hold_num)
+        self.bookkeeper.addNewHoldStateForCode(target_code,target_aver_cost,buy_price,target_info['target_num'] )
+        self.bookkeeper.addNewTransactionInfoForCode(target_code,buy_price,buy_num,trade_fee)
+
+        self.bookkeeper.cash -= (buy_value + trade_fee)
+
+
     def buyOrSell(self,target_code,target_info,last_hold_by_code):
-        las_hold_num = last_hold_by_code['hold_num']
+        last_hold_num = last_hold_by_code['hold_num']
         target_hold_num = target_info['target_num']
-        if target_hold_num > ori_hold_num:
-            buy()
-        elif target_hold_num < ori_hold_num:
-            sell()
-        else:
-            pass
+        if last_hold_num == 0 and target_hold_num == 0:
+            pass 
+        if target_hold_num >= last_hold_num:
+            self.buy(target_code,target_info,last_hold_by_code)
+        else:# target_hold_num < last_hold_num:
+            self.sell(target_code,target_info,last_hold_by_code)
+        
+            
             
 
     def tradeByDatetime(self,last_account_dict,target_hold_dict):
@@ -42,12 +78,23 @@ class StockTrader(object):
                 last_hold_by_code = last_account_hold_dict[k]
             
             self.buyOrSell(target_code = k,target_info = v,last_hold_by_code = last_hold_by_code)
+        
+        self.bookkeeper.finishTradeByDatetime()
 
 
+    def getStockPriceDict(self,date_time,target_stock_pool,last_hold_state_dict):
+        last_stock_list = last_hold_state_dict.keys()
+
+        stock_list = list(set(target_stock_pool).union(set(last_stock_list)))
+        price_list = getClosePrices(date_time = date_time,stock_code_list = stock_list)
+
+        return dict(zip(stock_list,price_list))
+    
     def run(self,datetime,stock_pool,stock_rank,total_position):
         last_account_dict = self.bookkeeper.lastAccountState()
-        target_hold_dict = self.position_spilitor.getPosition(stock_pool,stock_rank,total_position,last_account_dict)
-        self.bookkeeper.updateAccountInfo(target_hold_dict)
+        stock_price_dict = self.getStockPriceDict(datetime,stock_pool,last_account_dict['hold_state'])
+        self.bookkeeper.updateAccountInfo(stock_price_dict)
+        target_hold_dict = self.position_spilitor.getTargetPosition(stock_price_dict,stock_pool,stock_rank,total_position,last_account_dict)
         self.tradeByDatetime(last_account_dict,target_hold_dict)
 
         

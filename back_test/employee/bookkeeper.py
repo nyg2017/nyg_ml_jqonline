@@ -25,7 +25,7 @@ class BookKeeper(object):
         new_record['cash'] = -1
         new_record['date_time'] = date
         new_record['hold_state'] = dict()
-        new_record['trade_state'] = dict()
+        new_record['transaction_state'] = dict()
         new_record['index_state'] = dict()
         self.account[self.index] = new_record
 
@@ -49,11 +49,13 @@ class BookKeeper(object):
         re_code_account_info['pnl'] = market_price * hold_num - aver_cost * hold_num
         return re_code_account_info
 
-    def addNewTransactionInfoForCode(self,code,transaction_price,transaction_num):
+    def addNewTransactionInfoForCode(self,code,transaction_price,transaction_num,transaction_fee):
         re_transaction_info_for_code = dict()
         re_transaction_info_for_code['transaction_price'] = transaction_price
         re_transaction_info_for_code['transaction_num'] = transaction_num
-        self.account[self.index]['trade_state'][code] = re_code_account_info
+        re_transaction_info_for_code['transaction_fee'] = transaction_fee
+
+        self.account[self.index]['transaction_state'][code] = re_transaction_info_for_code
 
     def addNewIndexState(self,index_code,index_value):
         re_new_index_state = dict()
@@ -62,10 +64,14 @@ class BookKeeper(object):
         self.account[self.index]['index_state'] = re_new_index_state
 
 
-    def updateAccountInfo(self,target_hold_dict):
+    def finishTradeByDatetime(self):
+        self.account[self.index]['capital'] = self.capital
+        self.account[self.index]['cash'] = self.cash
+
+    def updateAccountInfo(self,stock_price_dict):
         stock_total_value = 0
-        for k,v in self.account[self.index-1]['hold_state']:
-            stock_total_value += target_hold_dict[v]['market_price'] * v['hold_num']
+        for k,v in self.account[self.index-1]['hold_state'].items():
+            stock_total_value += stock_price_dict[k] * v['hold_num']
         
         self.capital = stock_total_value + self.cash
 
