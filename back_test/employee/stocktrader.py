@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 from back_test.employee.positionspilitor import PositionSpilitor
-from date_interface.jq_data import *
+from date_interface.data_api import UserDataApi
 
 
 class StockTrader(object):
@@ -86,7 +86,7 @@ class StockTrader(object):
         last_stock_list = last_hold_state_dict.keys()
 
         stock_list = list(set(target_stock_pool).union(set(last_stock_list)))
-        price_list = getClosePrices(date_time = date_time,stock_code_list = stock_list)
+        price_list = UserDataApi.getClosePrices(date_time = date_time,stock_code_list = stock_list)
 
         return dict(zip(stock_list,price_list))
     

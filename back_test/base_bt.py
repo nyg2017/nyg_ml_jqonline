@@ -30,7 +30,7 @@ class BaseBT(object):
 if __name__ == "__main__":
     login()
     capital = 1000000
-    base_index = ""
+    base_index = '000001.XSHG'
     weight_mode = ""
     fee_rate = 0.0005
     slide_point = 0.01
