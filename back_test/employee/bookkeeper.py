@@ -36,7 +36,7 @@ class BookKeeper(object):
         re_code_account_info['hold_num'] = hold_num
         re_code_account_info['cost'] = aver_cost * hold_num
         re_code_account_info['market_value'] = market_price * hold_num
-        re_code_account_info['pnl'] = market_price * hold_num - aver_cost * hold_num
+        re_code_account_info['pnl'] = market_price * hold_num - aver_cost * max(hold_num,1) # when sell the stock to zero, we need to keep the aver_cost as pnl cause the hold_num is zero
         self.account[self.index]['hold_state'][code] = re_code_account_info
 
     def initCodeInfoForHoldState(self,aver_cost,market_price,hold_num):
@@ -79,4 +79,5 @@ class BookKeeper(object):
     def lastAccountState(self):
         return self.account[self.index-1]
 
+    
     

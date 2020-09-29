@@ -34,8 +34,8 @@ class PositionSpilitor(object):
             temp_dict['target_percent'] = position_percent[i]
             target_hold_dict[stock_code] = temp_dict
         
-        for k in last_hold_state.keys():
-            if k not in stock_pool:
+        for stock_code in last_hold_state.keys():
+            if stock_code not in stock_pool:
                 temp_dict = dict()
                 temp_dict['target_percent'] = 0.0
                 target_hold_dict[stock_code] = temp_dict  

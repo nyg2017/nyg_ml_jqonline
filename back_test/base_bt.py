@@ -32,7 +32,7 @@ if __name__ == "__main__":
     capital = 1000000
     base_index = '000001.XSHG'
     weight_mode = ""
-    fee_rate = 0.0005
+    fee_rate = 0.00005
     slide_point = 0.01
     start_date = "2015-01-05"
     end_date = "2015-01-06"
@@ -42,8 +42,11 @@ if __name__ == "__main__":
     stock_list = ['600362.XSHG','600360.XSHG','600361.XSHG']
     rank = [0,1,2]
     bt.run(start_date,stock_list,rank,total_position)
+
+    stock_list = ['600367.XSHG','600360.XSHG','600361.XSHG']
+
     bt.run(end_date,stock_list,rank,total_position)
     for k,v in bt.bookkeeper.account.items():
-        print (v['transaction_state'])
+        print (v['capital'])
         print (v['hold_state'])
     #print (bt.bookkeeper.account)

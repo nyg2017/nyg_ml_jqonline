@@ -14,15 +14,6 @@ class StockTrader(object):
         self.position_spilitor = PositionSpilitor(trade_mode,bookkeeper)
 
 
-    '''
-    def extend_target_hold_dict(self,ori_hold_dict,target_hold_dict):
-        for k in ori_hold_dict.keys():
-            if k not in target_hold_dict.keys():
-                target_hold_dict[k] = 
-        
-        return target_hold_dict
-    '''
-
     def sell(self,target_code,target_info,last_hold_by_code):
         last_aver_cost = last_hold_by_code['aver_cost']
         last_hold_num = last_hold_by_code['hold_num']
@@ -33,10 +24,16 @@ class StockTrader(object):
         self_value = sell_price * sell_num 
         trade_fee = self_value * self.fee
 
-        target_aver_cost = (last_aver_cost * last_hold_num - self_value + trade_fee)/(last_hold_num - sell_num)
-        self.bookkeeper.addNewHoldStateForCode(target_code,target_aver_cost,sell_price,target_info['target_num'] )
+        if last_hold_num - sell_num > 0:
+            target_aver_cost = (last_aver_cost * last_hold_num - self_value + trade_fee)/(last_hold_num - sell_num)
+            self.bookkeeper.addNewHoldStateForCode(target_code,target_aver_cost,sell_price,target_info['target_num'] )
+        else:
+            target_aver_cost = (last_aver_cost * last_hold_num - self_value + trade_fee)
+            self.bookkeeper.addNewHoldStateForCode(target_code,target_aver_cost,sell_price,target_info['target_num'] )
+
         self.bookkeeper.addNewTransactionInfoForCode(target_code,sell_price,-sell_num,trade_fee)
         self.bookkeeper.cash += (self_value - trade_fee)
+            
 
     def buy(self,target_code,target_info,last_hold_by_code):
         last_aver_cost = last_hold_by_code['aver_cost']
@@ -49,38 +46,61 @@ class StockTrader(object):
         trade_fee = buy_value * self.fee
 
         target_aver_cost = (last_aver_cost * last_hold_num + buy_value + trade_fee ) / (buy_num + last_hold_num)
+        if self.bookkeeper.cash < (buy_value + trade_fee):
+            raise ("error : cash is not enough for target stock num, please check you codes")
         self.bookkeeper.addNewHoldStateForCode(target_code,target_aver_cost,buy_price,target_info['target_num'] )
         self.bookkeeper.addNewTransactionInfoForCode(target_code,buy_price,buy_num,trade_fee)
 
         self.bookkeeper.cash -= (buy_value + trade_fee)
 
 
-    def buyOrSell(self,target_code,target_info,last_hold_by_code):
-        last_hold_num = last_hold_by_code['hold_num']
-        target_hold_num = target_info['target_num']
-        if last_hold_num == 0 and target_hold_num == 0:
-            pass 
-        if target_hold_num >= last_hold_num:
-            self.buy(target_code,target_info,last_hold_by_code)
-        else:# target_hold_num < last_hold_num:
-            self.sell(target_code,target_info,last_hold_by_code)
+    def BatchBuy(self,last_account_hold_dict,target_hold_dict):
+        for target_code,target_info in target_hold_dict.items():
+            if target_code not in last_account_hold_dict.keys():
+                last_hold_by_code = self.bookkeeper.initCodeInfoForHoldState(aver_cost = 0, market_price = 0, hold_num = 0)
+            else:
+                last_hold_by_code = last_account_hold_dict[target_code]            
+            
+            last_hold_num = last_hold_by_code['hold_num']
+            target_hold_num = target_info['target_num']
+            if last_hold_num == 0 and target_hold_num == 0:
+                pass 
+            if target_hold_num >= last_hold_num:
+                self.buy(target_code,target_info,last_hold_by_code)  
         
+        
+
+    def BatchSell(self,last_account_hold_dict,target_hold_dict):
+        for target_code,target_info in target_hold_dict.items():
+            if target_code not in last_account_hold_dict.keys():
+                last_hold_by_code = self.bookkeeper.initCodeInfoForHoldState(aver_cost = 0, market_price = 0, hold_num = 0)
+            else:
+                last_hold_by_code = last_account_hold_dict[target_code]            
             
-            
+            last_hold_num = last_hold_by_code['hold_num']
+            target_hold_num = target_info['target_num']
+            if last_hold_num == 0 and target_hold_num == 0:
+                pass 
+            if target_hold_num < last_hold_num:
+                self.sell(target_code,target_info,last_hold_by_code)            
+    
+
 
     def tradeByDatetime(self,last_account_dict,target_hold_dict):
         #target_hold_dict_extend = self.extend_target_hold_dict(ori_hold_dict,target_hold_dict)
-        last_account_hold_dict = last_account_dict['hold_state']
-        for k,v in target_hold_dict.items():
-            if k not in last_account_hold_dict.keys():
-                last_hold_by_code = self.bookkeeper.initCodeInfoForHoldState(aver_cost = 0, market_price = 0, hold_num = 0)
-            else:
-                last_hold_by_code = last_account_hold_dict[k]
-            
-            self.buyOrSell(target_code = k,target_info = v,last_hold_by_code = last_hold_by_code)
         
+        last_account_hold_dict = last_account_dict['hold_state']
+        self.BatchSell(last_account_hold_dict,target_hold_dict)
+        self.BatchBuy(last_account_hold_dict,target_hold_dict)
+        #for k,v in target_hold_dict.items():
+        #    if k not in last_account_hold_dict.keys():
+        #        last_hold_by_code = self.bookkeeper.initCodeInfoForHoldState(aver_cost = 0, market_price = 0, hold_num = 0)
+        #    else:
+        #        last_hold_by_code = last_account_hold_dict[k]
+        #    
+        #    self.BatchSell(target_code = k,target_info = v,last_hold_by_code = last_hold_by_code)       
         self.bookkeeper.finishTradeByDatetime()
-
+             
 
     def getStockPriceDict(self,date_time,target_stock_pool,last_hold_state_dict):
         last_stock_list = last_hold_state_dict.keys()
