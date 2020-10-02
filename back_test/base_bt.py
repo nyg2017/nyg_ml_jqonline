@@ -7,7 +7,6 @@ if __name__ == "__main__":
 from back_test.employee.stocktrader import StockTrader
 from back_test.employee.bookkeeper import BookKeeper
 from back_test.employee.indextrader import IndexTrader
-from date_interface.jq_data import login
 from back_test.employee.inspector import Inspector
 
 
@@ -31,6 +30,8 @@ class BaseBT(object):
 
 
 if __name__ == "__main__":
+    from back_test.date_interface.jq_data import login
+
     login()
     capital = 1000000
     base_index = '000001.XSHG'
