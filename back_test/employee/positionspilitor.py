@@ -27,7 +27,10 @@ class PositionSpilitor(object):
         self.bookkeeper = bookkeeper
 
     
-    def initTargetHoldDict(self,stock_pool,position_percent,last_hold_state):
+    def initTargetHoldDict(self,stock_pool,stock_rank,last_hold_state):
+        
+        position_percent = self.position_func(stock_rank)
+        
         target_hold_dict = dict()
         for i,stock_code in enumerate(stock_pool):
             temp_dict = dict()
@@ -45,30 +48,45 @@ class PositionSpilitor(object):
     def calculateTargetNum(self,tradeable_capital,target_percent,price,mini_tradeable_unit = 100):
         return  (tradeable_capital * target_percent) // (price * mini_tradeable_unit) * 100
     
-    def calculateTargetHoldDict(self,stock_price_dict,tradeable_capital,inited_percent_target_hold_dict):
+    def calculateTargetHoldDict(self,stock_price_dict,tradeable_capital,inited_percent_target_hold_dict,last_hold_state,stock_tradeable_dict):
 
 
 
-        for i,code in enumerate(stock_price_dict.keys()):
-            inited_percent_target_hold_dict[code]['market_price'] = stock_price_dict[code]
-            inited_percent_target_hold_dict[code]['target_num'] = self.calculateTargetNum(tradeable_capital,inited_percent_target_hold_dict[code]['target_percent'],stock_price_dict[code])
+        for i,stock in enumerate(stock_price_dict.keys()):
+            inited_percent_target_hold_dict[stock]['market_price'] = stock_price_dict[stock]
+            inited_percent_target_hold_dict[stock]['target_num'] = self.calculateTargetNum(tradeable_capital,inited_percent_target_hold_dict[stock]['target_percent'],stock_price_dict[stock])
 
+        for stock,hold in last_hold_state.items():
+            if not stock_tradeable_dict[stock]:
+                inited_percent_target_hold_dict['target_num'] = hold['hold_num']
+        
         return inited_percent_target_hold_dict
 
 
 
-    def getTargetPosition(self,stock_price_dict,stock_pool,stock_rank,total_position,last_hold_account_dict):
+    
+    def getUnsellableStockValue(self,last_hold_state,stock_tradeable_dict):
+        
+        unsellablecapital = 0.9
+        for stock,hold in last_hold_state.items():
+            print (stock,hold)
+            sellable = stock_tradeable_dict[stock]
+            if not sellable:
+                unsellablecapital += hold['market_value']
+        return unsellablecapital
+    
+    def getTargetPosition(self,stock_pool,stock_rank,total_position,stock_price_dict,stock_tradeable_dict,last_hold_account_dict):
         #ori_hold_account_dict['capital']
         capital = self.bookkeeper.capital
         tradeable_capital = total_position * capital
-
-        position_percent = self.position_func(stock_rank)
-        
         last_hold_state = last_hold_account_dict['hold_state']
-        
-        inited_percent_target_hold_dict = self.initTargetHoldDict(stock_pool,position_percent,last_hold_state)
 
-        target_hold_dict = self.calculateTargetHoldDict(stock_price_dict,tradeable_capital,inited_percent_target_hold_dict)
+        unsellablecapital = self.getUnsellableStockValue(last_hold_state,stock_tradeable_dict)
+   
+        
+        inited_percent_target_hold_dict = self.initTargetHoldDict(stock_pool,stock_rank,last_hold_state)
+
+        target_hold_dict = self.calculateTargetHoldDict(stock_price_dict,tradeable_capital - unsellablecapital,inited_percent_target_hold_dict,last_hold_state,stock_tradeable_dict)
         
 
         return target_hold_dict

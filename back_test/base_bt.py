@@ -8,6 +8,8 @@ from back_test.employee.stocktrader import StockTrader
 from back_test.employee.bookkeeper import BookKeeper
 from back_test.employee.indextrader import IndexTrader
 from date_interface.jq_data import login
+from back_test.employee.inspector import Inspector
+
 
 class BaseBT(object):
     def __init__(self,capital,base_index,weight_mode,fee_rate,slide_point,start_date,end_date,trade_mode):
@@ -21,6 +23,7 @@ class BaseBT(object):
 
     def run(self,datetime,stock_pool,stock_rank,total_position):
         self.bookkeeper.newDayBegin(datetime)
+        #self,Inspector.tradeableCheck(datetime,stock_pool)
         self.stocktrader.run(datetime,stock_pool,stock_rank,total_position)
         self.indextrader.run(datetime)
         self.bookkeeper.dayEnd(datetime)
