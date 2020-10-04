@@ -43,6 +43,12 @@ def getLimitInfor(date_time,stock_list):
     code_limit_dict = dict(zip(code,var))
     return np.array([code_limit_dict[k] != 0 for k in stock_list])
 
+def validIndex(date_time,stock_list):
+    a = getSuspensionInfor(date_time,stock_list)
+    b = getLimitInfor(date_time,stock_list)
+    v = np.logical_and(a,b)
+    return v
+
 
 if __name__ == "__main__":
     login()

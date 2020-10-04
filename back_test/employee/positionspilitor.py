@@ -58,7 +58,7 @@ class PositionSpilitor(object):
 
         for stock,hold in last_hold_state.items():
             if not stock_tradeable_dict[stock]:
-                inited_percent_target_hold_dict['target_num'] = hold['hold_num']
+                inited_percent_target_hold_dict[stock]['target_num'] = hold['hold_num']
         
         return inited_percent_target_hold_dict
 
@@ -69,7 +69,6 @@ class PositionSpilitor(object):
         
         unsellablecapital = 0.9
         for stock,hold in last_hold_state.items():
-            print (stock,hold)
             sellable = stock_tradeable_dict[stock]
             if not sellable:
                 unsellablecapital += hold['market_value']

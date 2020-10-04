@@ -68,6 +68,8 @@ class SelectLeadingOnline(object):
             idx = sorted_price_score[i]
             stock_pool_list.append(stock_list[idx])
         
+        return stock_pool_list
+        
 
     
     def getWeightPriceScore(self,stock_list,stock_index_dict,weights = 0.7):
@@ -86,11 +88,9 @@ class SelectLeadingOnline(object):
 
 
 if __name__ == "__main__":
-    with open("/Users/sumnap/github/nyg_ml_plus/DATA/ori_data/industry_list/sw_l3.json","r") as f:
-        industry_list = json.load(f)
-
-    stock_list = industry_list["L72"]["stocks_list"]
+    login()
+    stock_list = jq.get_industry_stocks('I64')
     s_l = SelectLeadingOnline()
 
     print (stock_list)
-    s_l.selectLeadingFromGroup(stock_list)
+    print (s_l.selectLeadingFromGroup(stock_list))

@@ -78,6 +78,7 @@ class StockTrader(object):
                 last_hold_by_code = last_account_hold_dict[target_code]            
             
             last_hold_num = last_hold_by_code['hold_num']
+            
             target_hold_num = target_info['target_num']
             if last_hold_num == 0 and target_hold_num == 0:
                 pass 
