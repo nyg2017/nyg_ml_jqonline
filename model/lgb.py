@@ -49,6 +49,7 @@ class LGBModel(Model):
             pickle.dump(self.model, fw)
 
     def fit(self, X, y, *args, **kwargs):
+        y = y.reshape(-1)
         train_params=self.train_params
         X_train, X_test,y_train, y_test = train_test_split(X, y, test_size=train_params['test_size'])
         self.model.fit(X_train,y_train,eval_set=[(X_test,y_test)],eval_metric=train_params['eval_metric'],
@@ -62,9 +63,10 @@ class LGBModel(Model):
         return self.model.predict(X_test,pred_leaf=pred_leaf,**train_params['other_par'])
 
     @classmethod
-    def restore_model_from_file(cls,model_cfg,mFilename=None):
+    def restore_model_from_file(cls,model_cfg):
         mymodel=LGBModel(model_cfg)
-        with open(mFilename, 'rb') as fr:
+        m_file = mymodel.dump_params['dump_dir']
+        with open(m_file, 'rb') as fr:
             model = pickle.load(fr)
         mymodel.model=model
         return mymodel

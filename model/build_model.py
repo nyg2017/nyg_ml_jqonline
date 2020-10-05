@@ -13,3 +13,7 @@ def build_model(model_name,model_cfg):
     model = model_dict[model_name](model_cfg)
     model.build_model()
     return model
+
+def restore_model_from_file(model_name,model_cfg):
+    model = model_dict[model_name].restore_model_from_file(model_cfg)
+    return model

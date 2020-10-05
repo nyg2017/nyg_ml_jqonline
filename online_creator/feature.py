@@ -24,18 +24,18 @@ def init_feature_list(feature_cfg):
 
 
 class Feature(object):
-    def __init__(self,feature_cfg,stock_list,early_date = "2010-10-10"):
+    def __init__(self,feature_cfg,stock_list,early_date = "2010-10-10",last_date = "2020-10-10"):
         self.cfg = feature_cfg
         self.stock_list = stock_list
         self.start_date = self.cfg['start']
         self.end_date = self.cfg['end']
         self.feature_creator_list = init_feature_list(self.cfg["feature_cfg"])
-        self.initDateIndexDict(early_date)
+        self.initDateIndexDict(early_date,last_date)
     
 
-    def initDateIndexDict(self,early_date):
+    def initDateIndexDict(self,early_date,last_date):
 
-        trade_date_arr = jq.get_trade_days(early_date,self.end_date)
+        trade_date_arr = jq.get_trade_days(early_date,last_date)
         self.trade_date_list = dateArr2List(trade_date_arr)
         self.date_index_dict = list2Dic(self.trade_date_list)
         self.inverse_date_index_dict = invert_dict(self.date_index_dict )
@@ -47,7 +47,6 @@ class Feature(object):
         feature_all = []
         for date in self.date_list:
             daily_feature = self.creatFeatureByDate(date)
-            
             feature_all.append(np.array(daily_feature))
 
         return np.concatenate(tuple(feature_all),axis= 0)
@@ -68,7 +67,6 @@ class Feature(object):
             feature_temp = np.concatenate(tuple(feature_temp),axis = -1)
 
             feature.append(feature_temp)
-
         return np.concatenate(tuple(feature),axis = 0)
 
     def checkFeature():
@@ -80,15 +78,13 @@ if __name__ == "__main__":
     import json
     from util.jq_init import login
     login()
-    with open("./DATA/ori_data/industry_list/sw_l3.json","r") as f:
-        industry_list = json.load(f)
 
     feature_cfg = "./config/feature_create_cfg.json"
     with open(feature_cfg,"r") as f:
         feature_cfg = json.load(f)
 
-    stock_list = industry_list["L72"]["stocks_list"]
+    stock_list = jq.get_industry_stocks('I64')
 
     f = Feature(feature_cfg,stock_list)
-    feature = f.createFeatureAll()
-    print (feature)
+    feature_all = f.createFeatureAll()
+    print (feature_all.shape)
