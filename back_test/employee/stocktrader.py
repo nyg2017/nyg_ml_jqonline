@@ -46,7 +46,9 @@ class StockTrader(object):
         trade_fee = buy_value * self.fee
 
         target_aver_cost = (last_aver_cost * last_hold_num + buy_value + trade_fee ) / (buy_num + last_hold_num)
+
         if self.bookkeeper.cash < (buy_value + trade_fee):
+
             raise ("error : cash is not enough for target stock num, please check you codes")
         self.bookkeeper.addNewHoldStateForCode(target_code,target_aver_cost,buy_price,target_info['target_num'] )
         self.bookkeeper.addNewTransactionInfoForCode(target_code,buy_price,buy_num,trade_fee)
@@ -55,6 +57,7 @@ class StockTrader(object):
 
 
     def BatchBuy(self,last_account_hold_dict,target_hold_dict):
+        
         for target_code,target_info in target_hold_dict.items():
             if target_code not in last_account_hold_dict.keys():
                 last_hold_by_code = self.bookkeeper.initCodeInfoForHoldState(aver_cost = 0, market_price = 0, hold_num = 0)
@@ -63,8 +66,8 @@ class StockTrader(object):
             
             last_hold_num = last_hold_by_code['hold_num']
             target_hold_num = target_info['target_num']
-            if last_hold_num == 0 and target_hold_num == 0:
-                pass 
+            if last_hold_num == 0.0 and abs(target_hold_num) == 0.0:
+                continue 
             if target_hold_num >= last_hold_num:
                 self.buy(target_code,target_info,last_hold_by_code)  
         
@@ -80,8 +83,8 @@ class StockTrader(object):
             last_hold_num = last_hold_by_code['hold_num']
             
             target_hold_num = target_info['target_num']
-            if last_hold_num == 0 and target_hold_num == 0:
-                pass 
+            if last_hold_num == 0 and abs(target_hold_num) == 0:
+                continue 
             if target_hold_num < last_hold_num:
                 self.sell(target_code,target_info,last_hold_by_code)            
     
@@ -92,6 +95,7 @@ class StockTrader(object):
         
         last_account_hold_dict = last_account_dict['hold_state']
         self.BatchSell(last_account_hold_dict,target_hold_dict)
+
         self.BatchBuy(last_account_hold_dict,target_hold_dict)      
         self.bookkeeper.finishTradeByDatetime()
              

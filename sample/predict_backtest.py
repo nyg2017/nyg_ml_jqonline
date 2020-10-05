@@ -61,9 +61,16 @@ def predictBacktest(train_cfg):
         feature_dic = np.load("./DATA/buffer/feature_for_back_test.npy").item()
         #print (feature_dic)
 
-    for k ,v in feature_dic.items():
-        rank = np.zeros(len(stock_list))
-        bt.run(k,stock_list,rank,0.9)
+    for k ,feature in feature_dic.items():
+        prediction = model.predict(feature)
+        v = UserDataApi.validIndex(k,stock_list)
+        stock_list_temp = np.array(stock_list)[v]
+        prediction = prediction[v]
+        aver = np.argmax(prediction)
+        #index = prediction > aver
+        #stock_list_temp = stock_list_temp[index]
+        #prediction = prediction[index]
+        bt.run(k,list(stock_list_temp),prediction,0.9)
         print (bt.bookkeeper.capital)
 
 if __name__ == "__main__":
