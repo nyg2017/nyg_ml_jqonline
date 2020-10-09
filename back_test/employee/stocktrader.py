@@ -6,12 +6,12 @@ from back_test.date_interface.data_api import UserDataApi
 from back_test.employee.inspector import Inspector
 
 class StockTrader(object):
-    def __init__(self,fee_rate,slide_point,bookkeeper,trade_mode):
+    def __init__(self,fee_rate,slide_point,bookkeeper,position_mode):
         self.fee = fee_rate
         self.slide_point = slide_point
-        self.trade_mode = trade_mode
+        self.position_mode = position_mode
         self.bookkeeper = bookkeeper
-        self.position_spilitor = PositionSpilitor(trade_mode,bookkeeper)
+        self.position_spilitor = PositionSpilitor(position_mode,bookkeeper)
         self.inspector = Inspector()
 
     def sell(self,target_code,target_info,last_hold_by_code):
@@ -109,12 +109,12 @@ class StockTrader(object):
 
         return dict(zip(stock_list,price_list)),dict(zip(stock_list,list(tradeable_array)))
     
-    def run(self,datetime,stock_pool,stock_rank,total_position):
+    def run(self,datetime,stock_pool,stock_score,total_position):
         last_account_dict = self.bookkeeper.lastAccountState()
         stock_price_dict,stock_tradeable_dict = self.getStockPriceDict(datetime,stock_pool,last_account_dict['hold_state'])
         self.bookkeeper.updateAccountInfo(stock_price_dict)
         target_hold_dict = self.position_spilitor.getTargetPosition(stock_pool = stock_pool,
-                                                                    stock_rank = stock_rank,
+                                                                    stock_score = stock_score,
                                                                     total_position = total_position,
                                                                     stock_price_dict = stock_price_dict,
                                                                     stock_tradeable_dict = stock_tradeable_dict,

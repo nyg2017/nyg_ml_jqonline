@@ -20,8 +20,11 @@ class Painter(object):
         date_array = np.array(date_list)
         capital_array = np.array(capital_list)
         index_value_array = np.array(index_value_list)
+        if index_value_array[0] == -1:
+            index_value_array[0] = index_value_array[1]
+            
         return_array = capital_array / capital_array[0] - 1.0
-        print (index_value_array,index_value_array[0])
+        #print (index_value_array,index_value_array[0])
         index_return_array = (index_value_array / index_value_array[0]) - 1.0
 
         
@@ -41,18 +44,19 @@ class Painter(object):
         font1 = FontProperties() 
         s = str(date_list[0]) + str(date_list[-1])
         #ax1.set_title(s,fontproperties=font1)
+        x_array = np.arange(0,return_array.shape[0],1)
         ax1.set_title(u"return vis " + s,fontproperties=font1)
         ax1.set_xlabel(u"date",fontproperties=font1)
         ax1.set_ylabel(u"return",fontproperties=font1) 
-        ax1.plot(date_array,return_array,'-',label ="return")
-        ax1.plot(date_array,index_return_array,'-',label ="index_return")
+        ax1.plot(x_array,return_array,'-',label ="return")
+        ax1.plot(x_array,index_return_array,'-',label ="index_return")
         ax1.legend()
 
         ax2.set_title(u"return per day vis",fontproperties=font1)
         ax2.set_xlabel(u"date",fontproperties=font1)
         ax2.set_ylabel(u"return per day",fontproperties=font1) 
-        ax2.plot(date_array,return_per_day,'-',label ="return per day")
-        ax2.plot(date_array,index_return_per_day,'-',label ="index_return per day")
+        ax2.plot(x_array,return_per_day,'-',label ="return per day")
+        ax2.plot(x_array,index_return_per_day,'-',label ="index_return per day")
         ax2.legend()
 
 

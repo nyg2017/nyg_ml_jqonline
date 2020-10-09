@@ -12,19 +12,18 @@ from back_test.employee.painter import Painter
 from back_test.employee.analyst import Analyst
 
 class BaseBT(object):
-    def __init__(self,capital,base_index,weight_mode,fee_rate,slide_point,start_date,end_date,trade_mode):
+    def __init__(self,capital,base_index,fee_rate,slide_point,start_date,end_date,position_mode):
         self.capital = capital
-        self.weight_mode = weight_mode
         self.bookkeeper = BookKeeper(ori_capital=capital,start_date = start_date)
-        self.stocktrader = StockTrader(fee_rate,slide_point,self.bookkeeper,trade_mode)
+        self.stocktrader = StockTrader(fee_rate,slide_point,self.bookkeeper,position_mode)
         self.indextrader = IndexTrader(base_index,start_date = start_date,bookkeeper = self.bookkeeper)
         self.painter = Painter(self.bookkeeper)
         self.analyst = Analyst()
 
-    def run(self,datetime,stock_pool,stock_rank,total_position):
+    def run(self,datetime,stock_pool,stock_score,total_position):
         self.bookkeeper.newDayBegin(datetime)
         #self,Inspector.tradeableCheck(datetime,stock_pool)
-        self.stocktrader.run(datetime,stock_pool,stock_rank,total_position)
+        self.stocktrader.run(datetime,stock_pool,stock_score,total_position)
         self.indextrader.run(datetime)
         self.bookkeeper.dayEnd(datetime)
 
@@ -50,19 +49,20 @@ if __name__ == "__main__":
     end_date = "2019-12-31"
     trade_mode = "mean"
     total_position = 0.95
-    bt = BaseBT(capital,base_index,weight_mode,fee_rate,slide_point,start_date,end_date,trade_mode)
     #stock_list = ['300031.XSHE', '002605.XSHE', '002467.XSHE', '000835.XSHE', '300052.XSHE', '300242.XSHE', '300226.XSHE', '002447.XSHE', '300295.XSHE', '600804.XSHG', '000503.XSHE', '300113.XSHE', '300043.XSHE', '300104.XSHE', '002095.XSHE']
     stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE']
     from datetime import datetime, date
     from datetime import timedelta
     date_list = [date.strftime("%Y-%m-%d") for date in jq.get_trade_days(start_date=start_date, end_date=end_date, count=None)]
+    bt = BaseBT(capital,base_index,weight_mode,fee_rate,slide_point,date_list[0],end_date,trade_mode)
+
     print (date_list)
     for date in date_list:
         v = UserDataApi.validIndex(date,stock_list)
         stock_array = np.array(stock_list)[v]
-        rank = np.ones_like(stock_array)
+        score = np.ones_like(stock_array)
 
-        bt.run(date,list(stock_array),list(rank),total_position)
+        bt.run(date,stock_array,score,total_position)
         print (date,bt.bookkeeper.capital)
     bt.analysist()
     bt.vis()

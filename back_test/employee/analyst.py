@@ -7,12 +7,19 @@ def isYearEnd(date):
     return False
 
 
+'''
 def getPerDayReturn(capital_list):
     capital_array = np.array(capital_list)
     capital_array_temp = deepcopy(capital_array)
     capital_array_temp[1:] = capital_array[:capital_array.shape[0]-1]
     return_per_day = capital_array/capital_array_temp - 1.0
     return return_per_day
+'''
+def getPerDayReturn(capital_list):
+    capital_array = np.array(capital_list)
+    return_per_day = capital_array/capital_array[0]
+    return return_per_day
+
 
 class Analyst(object):
     def __init__(self,free_return = 0.04):

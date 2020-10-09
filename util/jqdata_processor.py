@@ -12,7 +12,7 @@ def invert_dict(d):
     return dict(zip(d.values(), d.keys()))
 
 def dateArr2List(date_arr):
-    date_list = [pd.Timestamp(date) for date in date_arr]
+    date_list = [date.strftime('%Y-%m-%d') for date in date_arr]
     return date_list
 
 

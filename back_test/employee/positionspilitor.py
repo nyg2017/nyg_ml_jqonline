@@ -6,7 +6,8 @@ from back_test.date_interface.jq_data import getClosePrices
 
 
 position_func_dict = {
-    "mean":meanPosition
+    "mean":meanPosition,
+    "exp":expPosition
 }
 
 
@@ -27,9 +28,9 @@ class PositionSpilitor(object):
         self.bookkeeper = bookkeeper
 
     
-    def initTargetHoldDict(self,stock_pool,stock_rank,last_hold_state):
+    def initTargetHoldDict(self,stock_pool,stock_score,last_hold_state):
         
-        position_percent = self.position_func(stock_rank)
+        position_percent = self.position_func(stock_score)
         
         target_hold_dict = dict()
         for i,stock_code in enumerate(stock_pool):
@@ -74,7 +75,7 @@ class PositionSpilitor(object):
                 unsellablecapital += hold['market_value']
         return unsellablecapital
     
-    def getTargetPosition(self,stock_pool,stock_rank,total_position,stock_price_dict,stock_tradeable_dict,last_hold_account_dict):
+    def getTargetPosition(self,stock_pool,stock_score,total_position,stock_price_dict,stock_tradeable_dict,last_hold_account_dict):
         #ori_hold_account_dict['capital']
         capital = self.bookkeeper.capital
         tradeable_capital = total_position * capital
@@ -83,7 +84,7 @@ class PositionSpilitor(object):
         unsellablecapital = self.getUnsellableStockValue(last_hold_state,stock_tradeable_dict)
    
         
-        inited_percent_target_hold_dict = self.initTargetHoldDict(stock_pool,stock_rank,last_hold_state)
+        inited_percent_target_hold_dict = self.initTargetHoldDict(stock_pool,stock_score,last_hold_state)
 
         target_hold_dict = self.calculateTargetHoldDict(stock_price_dict,tradeable_capital - unsellablecapital,inited_percent_target_hold_dict,last_hold_state,stock_tradeable_dict)
         
