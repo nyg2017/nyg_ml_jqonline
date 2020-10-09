@@ -10,6 +10,7 @@ class BookKeeper(object):
         self.account[self.index]['cash'] = ori_capital
         self.capital = ori_capital
         self.cash = ori_capital
+
         
 
     def newDayBegin(self,date):
@@ -26,7 +27,8 @@ class BookKeeper(object):
         new_record['date_time'] = date
         new_record['hold_state'] = dict()
         new_record['transaction_state'] = dict()
-        new_record['index_state'] = dict()
+        new_record['index_state'] = dict()  
+        new_record['turnover'] = 0.0
         self.account[self.index] = new_record
 
     def addNewHoldStateForCode(self,code,aver_cost,market_price,hold_num):
@@ -54,7 +56,8 @@ class BookKeeper(object):
         re_transaction_info_for_code['transaction_price'] = transaction_price
         re_transaction_info_for_code['transaction_num'] = transaction_num
         re_transaction_info_for_code['transaction_fee'] = transaction_fee
-
+        re_transaction_info_for_code['turnover'] = transaction_price * abs(transaction_num) + transaction_fee
+        self.account[self.index]['turnover'] += transaction_price * abs(transaction_num) + transaction_fee
         self.account[self.index]['transaction_state'][code] = re_transaction_info_for_code
 
     def addNewIndexState(self,index_code,index_value):
@@ -75,9 +78,15 @@ class BookKeeper(object):
         
         self.capital = stock_total_value + self.cash
 
+    def getDailyRecord(self):
+        for i in range(self.index):
+            yield self.account[i]
+
 
     def lastAccountState(self):
         return self.account[self.index-1]
-
+    
+    def currentAccountState(self):
+        return self.account[self.index]
     
     

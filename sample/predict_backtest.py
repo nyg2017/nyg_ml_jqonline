@@ -13,8 +13,8 @@ from back_test.base_bt import BaseBT
 
 UserDataApi.login()
 buffered_feature = True
-
-
+start_date = '2019-01-21'
+end_date = '2019-02-20'
 
 def initBackTest(start_date,end_date):
     capital = 1000000
@@ -22,8 +22,8 @@ def initBackTest(start_date,end_date):
     weight_mode = "mean"
     fee_rate = 0.00005
     slide_point = 0.01
-    start_date = "2020-07-03"
-    end_date = "2020-07-13"
+    start_date = start_date
+    end_date = end_date
     trade_mode = "mean"
     total_position = 0.95
     bt = BaseBT(capital,base_index,weight_mode,fee_rate,slide_point,start_date,end_date,trade_mode)
@@ -43,6 +43,9 @@ def predictBacktest(train_cfg):
     with open(feature_cfg,"r") as f:
         feature_cfg = json.load(f)
     bt = initBackTest(feature_cfg['start'],feature_cfg['end'])
+
+    feature_cfg['start'] = start_date
+    feature_cfg['end'] = end_date
 
     stock_list = jq.get_industry_stocks('I64')
     feature_creator = Feature(feature_cfg,stock_list)
@@ -70,8 +73,8 @@ def predictBacktest(train_cfg):
         #index = prediction > aver
         #stock_list_temp = stock_list_temp[index]
         #prediction = prediction[index]
-        bt.run(k,list(stock_list_temp),prediction,0.9)
-        print (bt.bookkeeper.capital)
+        bt.run(k,stock_list_temp,prediction,0.9)
+        print ("capital:",bt.bookkeeper.capital,"index:",bt.bookkeeper.account[bt.bookkeeper.index]['index_state'])
 
 if __name__ == "__main__":
     
