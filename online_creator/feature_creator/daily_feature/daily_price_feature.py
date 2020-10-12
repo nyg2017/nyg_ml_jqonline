@@ -85,7 +85,6 @@ func_dic = {
 class DailyPriceFeature(DailyFeatureBase):
     def __init__(self,cfg):
         self.cfg = cfg
-        pass
 
     def getFeatureByDate(self,date,stock_list,date_index_dict,inverse_date_index_dict):
         

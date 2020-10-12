@@ -1,4 +1,4 @@
-from date_interface import jq_data
+from back_test.date_interface import jq_data
 
 
 

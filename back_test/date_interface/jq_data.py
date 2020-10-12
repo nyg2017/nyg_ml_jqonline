@@ -35,6 +35,13 @@ def getSuspensionInfor(date_time,stock_list):
     sus_dict = dict(zip(code,var))
     return np.array([sus_dict[k] == 0 for k in stock_list])
 
+def getVolumn(date_time,stock_code_list):
+    result = jq.get_price(list(stock_code_list), start_date=date_time, end_date=date_time, frequency='daily', fields=['volume'], skip_paused=False, fq='pre', count=None, panel=True, fill_paused=True)
+    code = list(result['code'])
+    cps = list(result['volume '])
+    code_cps_dict = dict(zip(code,cps))
+    return [code_cps_dict[k] for k in stock_code_list]
+
 
 def getLimitInfor(date_time,stock_list):
     result = jq.get_price(list(stock_list), start_date=date_time, end_date=date_time, frequency='daily', fields=['high','low'], skip_paused=False, fq='pre', count=None, panel=True, fill_paused=True)

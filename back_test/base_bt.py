@@ -46,7 +46,7 @@ if __name__ == "__main__":
     fee_rate = 0.00005
     slide_point = 0.01
     start_date = "2019-01-01"
-    end_date = "2019-12-31"
+    end_date = "2019-01-31"
     trade_mode = "mean"
     total_position = 0.95
     #stock_list = ['300031.XSHE', '002605.XSHE', '002467.XSHE', '000835.XSHE', '300052.XSHE', '300242.XSHE', '300226.XSHE', '002447.XSHE', '300295.XSHE', '600804.XSHG', '000503.XSHE', '300113.XSHE', '300043.XSHE', '300104.XSHE', '002095.XSHE']
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     from datetime import datetime, date
     from datetime import timedelta
     date_list = [date.strftime("%Y-%m-%d") for date in jq.get_trade_days(start_date=start_date, end_date=end_date, count=None)]
-    bt = BaseBT(capital,base_index,weight_mode,fee_rate,slide_point,date_list[0],end_date,trade_mode)
+    bt = BaseBT(capital,base_index,fee_rate,slide_point,date_list[0],end_date,trade_mode)
 
     print (date_list)
     for date in date_list:

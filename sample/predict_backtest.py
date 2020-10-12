@@ -14,7 +14,7 @@ from back_test.base_bt import BaseBT
 UserDataApi.login()
 buffered_feature = True
 start_date = '2019-07-01'
-end_date = '2019-12-31'
+end_date = '2019-07-05'
 
 def initBackTest(start_date,end_date):
     capital = 1000000
@@ -23,7 +23,7 @@ def initBackTest(start_date,end_date):
     slide_point = 0.01
     start_date = start_date
     end_date = end_date
-    position_mode = "mean"
+    position_mode = "exp"
     total_position = 0.95
     bt = BaseBT(capital,base_index,fee_rate,slide_point,start_date,end_date,position_mode)
     return bt
