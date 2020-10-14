@@ -14,7 +14,7 @@ from back_test.base_bt import BaseBT
 UserDataApi.login()
 buffered_feature = True
 start_date = '2019-07-01'
-end_date = '2019-07-05'
+end_date = '2019-12-31'
 
 def initBackTest(start_date,end_date):
     capital = 1000000
@@ -23,7 +23,7 @@ def initBackTest(start_date,end_date):
     slide_point = 0.01
     start_date = start_date
     end_date = end_date
-    position_mode = "exp"
+    position_mode = "part"
     total_position = 0.95
     bt = BaseBT(capital,base_index,fee_rate,slide_point,start_date,end_date,position_mode)
     return bt
@@ -48,8 +48,9 @@ def predictBacktest(train_cfg):
 
     print (feature_cfg)
     stock_list = jq.get_industry_stocks('I64')
-    feature_creator = Feature(feature_cfg,stock_list)
-    #label_creator = Label(feature_cfg,stock_list)
+    stock_array = np.array(stock_list)
+    feature_creator = Feature(feature_cfg)
+    #label_creator = Label(feature_cfg)
     model = restore_model_from_file(model_name,model_cfg)
 
     
@@ -59,17 +60,26 @@ def predictBacktest(train_cfg):
         feature_dic = dict()
     for date in feature_creator.date_list:
         print ("predicting feature, date:",date)
+        is_public = UserDataApi.isPublic(date,stock_array)
+
+        stock_array_temp = stock_array[is_public]
         if buffered_feature:
             feature_per_day = feature_dic[date]
         else:
-            feature_per_day = feature_creator.creatFeatureByDate(date)
+            feature_per_day = feature_creator.creatFeatureByDate(date,stock_array_temp)
+            #label_per_day = label_creator.creatLabelByDate(date,stock_array_temp).reshape(-1)
             feature_dic[date] = feature_per_day
         
         prediction = model.predict(feature_per_day)
-        v = UserDataApi.validIndex(date,stock_list)
-        stock_list_temp = np.array(stock_list)[v]
+
+        v = UserDataApi.validIndex(date,stock_array_temp)
+        stock_list_temp = np.array(stock_array_temp)[v]
         prediction = prediction[v]
-        aver = np.argmax(prediction)
+        #prediction = label_per_day[v]
+        #prediction_ = np.nan_to_num(prediction)
+        #v =  ~(prediction == prediction_)
+        #prediction[v] = 0.0
+        
         #index = prediction > aver
         #stock_list_temp = stock_list_temp[index]
         #prediction = prediction[index]

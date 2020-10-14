@@ -3,8 +3,10 @@ import numpy as np
 
 def login():
     print ("login JQDATA servering")
-    account = "15210089516"
-    password = "Ningyaguang1"
+    #account = "15210089516"
+    #password = "Ningyaguang1"
+    account = "13132110856" # "18620156503"
+    password = "Ningyaguang1"     #"3DKkypzN6uPj"
     jq.auth(account,password)
     print ("login successed!")    
     remain_query = jq.get_query_count()
@@ -35,12 +37,7 @@ def getSuspensionInfor(date_time,stock_list):
     sus_dict = dict(zip(code,var))
     return np.array([sus_dict[k] == 0 for k in stock_list])
 
-def getVolumn(date_time,stock_code_list):
-    result = jq.get_price(list(stock_code_list), start_date=date_time, end_date=date_time, frequency='daily', fields=['volume'], skip_paused=False, fq='pre', count=None, panel=True, fill_paused=True)
-    code = list(result['code'])
-    cps = list(result['volume '])
-    code_cps_dict = dict(zip(code,cps))
-    return [code_cps_dict[k] for k in stock_code_list]
+
 
 
 def getLimitInfor(date_time,stock_list):
@@ -61,11 +58,6 @@ if __name__ == "__main__":
     login()
     code = ["300313.XSHE","300315.XSHE","300316.XSHE"]
     date_time = "2020-09-11"
-    a = getSuspensionInfor(date_time,code)
-    print (a)
-    b = getLimitInfor(date_time,code)
-    print (b)
-
-    print (np.logical_and(a,b))
-    v = np.array([1,2,3])
-    print (v[a])
+    
+    panel = getVolumn(date_time,code)
+    print (panel)

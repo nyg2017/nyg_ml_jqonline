@@ -12,9 +12,9 @@ reorder = False
 
 def query_and_buffer(date,stock_list,price_buffer):
     
-    
+        
     if date not in price_buffer.keys():
-        p = jq.get_price(stock_list, start_date=date, end_date=date, frequency='daily', fields=fields, skip_paused=False, fq='pre', count=None, panel=False, fill_paused=True)
+        p = jq.get_price(list(stock_list), start_date=date, end_date=date, frequency='daily', fields=fields, skip_paused=False, fq='pre', count=None, panel=False, fill_paused=True)
         price_buffer[date] = p
 
     return price_buffer[date]
@@ -37,7 +37,7 @@ def var(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,pric
             future_price = future_price.values[:,2:-2]
             var_f = (future_price - base_price)/base_price
         
-        #print ("var_f shape",var_f.shape)
+        #print ("var_f_p shape",var_f.shape)
         re_var_f.append(var_f)  
     
     return re_var_f
@@ -59,7 +59,6 @@ def return_n_day(date,params_list,stock_list,date_index_dict,inverse_date_index_
             base_price = base_price.values[:,3]
             return_f = ((future_price - base_price)/base_price)[...,np.newaxis]
         
-        #print ("return_f shape:",return_f.shape)
         re_return_f.append(return_f)
     return re_return_f
 
@@ -94,7 +93,6 @@ class DailyPriceFeature(DailyFeatureBase):
         for key,params_list in self.cfg.items():
             f = func_dic[key](date,params_list,stock_list,date_index_dict,inverse_date_index_dict,price_buffer)
             features = features + f
-
         return features
 
     

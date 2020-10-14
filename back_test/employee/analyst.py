@@ -59,7 +59,7 @@ class Analyst(object):
 
         std_var = np.std(return_per_day)
         sharpe = (annual_return - self.lost_free_return) / std_var
-        print (annual_return - self.lost_free_return,std_var)
+    
 
         max_draw_back,max_draw_begin,max_draw_end = self.maxDrawback(self.capital_list[start_index:end_index + 1],self.date_list[start_index:end_index + 1])
 
@@ -68,8 +68,9 @@ class Analyst(object):
     def maxDrawback(self,return_list,date_list):
         '''最大回撤率'''
         i = np.argmax((np.maximum.accumulate(return_list) - return_list) / np.maximum.accumulate(return_list))  # 结束位置
+
         if i == 0:
-            return 0
+            return 0,date_list[0],date_list[0]
         j = np.argmax(return_list[:i])  # 开始位置
         return (return_list[j] - return_list[i]) / (return_list[j]) , date_list[j],date_list[i]
 

@@ -21,9 +21,10 @@ def init_label_list(feature_cfg):
 
 
 class Label(object):
-    def __init__(self,feature_cfg,stock_list,early_date = "2010-10-10",last_date = "2020-10-10"):
+    def __init__(self,feature_cfg,early_date = "2010-10-10",last_date = "2020-10-10"):
         self.cfg = feature_cfg
-        self.stock_list = stock_list
+        #self.stock_list = stock_list
+
         self.start_date = self.cfg['start']
         self.end_date = self.cfg['end']
         self.label_creator_list = init_label_list(self.cfg["label_cfg"])
@@ -39,11 +40,11 @@ class Label(object):
 
         self.date_list = dateArr2List(jq.get_trade_days(self.start_date,self.end_date))
 
-    def createLabelAll(self):
+    def createLabelAll(self,stock_list):
 
         label_all = []
         for date in self.date_list:
-            daily_label = self.creatLabelByDate(date)
+            daily_label = self.creatLabelByDate(date,stock_list)
             label_all.append(np.array(daily_label))
 
         return np.concatenate(tuple(label_all),axis= 0)
@@ -56,10 +57,10 @@ class Label(object):
         
     #     return np.concatenate(tuple(feature_all),axis= 0)
     
-    def creatLabelByDate(self,date):
+    def creatLabelByDate(self,date,stock_list):
         label = []
         for creator in self.label_creator_list:
-            label_temp = creator.getLabelByDate(date,self.stock_list,self.date_index_dict,self.inverse_date_index_dict)
+            label_temp = creator.getLabelByDate(date,stock_list,self.date_index_dict,self.inverse_date_index_dict)
             
             label_temp = np.concatenate(tuple(label_temp),axis = -1)
             label.append(label_temp)

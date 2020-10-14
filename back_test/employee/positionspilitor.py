@@ -7,7 +7,8 @@ from back_test.date_interface.jq_data import getClosePrices
 
 position_func_dict = {
     "mean":meanPosition,
-    "exp":expPosition
+    "exp":expPosition,
+    "part":partPosition
 }
 
 

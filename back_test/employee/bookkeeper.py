@@ -79,7 +79,7 @@ class BookKeeper(object):
         self.capital = stock_total_value + self.cash
 
     def getDailyRecord(self):
-        for i in range(self.index):
+        for i in range(self.index + 1):
             yield self.account[i]
 
 

@@ -24,9 +24,9 @@ def init_feature_list(feature_cfg):
 
 
 class Feature(object):
-    def __init__(self,feature_cfg,stock_list,early_date = "2010-10-10",last_date = "2020-10-10"):
+    def __init__(self,feature_cfg,early_date = "2010-10-10",last_date = "2020-10-10"):
         self.cfg = feature_cfg
-        self.stock_list = stock_list
+        #self.stock_list = stock_list
         self.start_date = self.cfg['start']
         self.end_date = self.cfg['end']
         self.feature_creator_list = init_feature_list(self.cfg["feature_cfg"])
@@ -42,32 +42,33 @@ class Feature(object):
 
         self.date_list = dateArr2List(jq.get_trade_days(self.start_date,self.end_date))
 
-    def createFeatureAll(self):
+    def createFeatureAll(self,stock_list):
 
         feature_all = []
         for date in self.date_list:
-            daily_feature = self.creatFeatureByDate(date)
+            daily_feature = self.creatFeatureByDate(date,stock_list)
             feature_all.append(np.array(daily_feature))
 
         return np.concatenate(tuple(feature_all),axis= 0)
 
-    def createBatch(self,idx_list):
+    def createBatch(self,idx_list,stock_list):
         for idx in idx_list:
-            daily_feature = self.creatFeatureByDate(date)
+            daily_feature = self.creatFeatureByDate(date,stock_list)
             
             feature_all.append(daily_feature)
         
         return np.concatenate(tuple(feature_all),axis= 0)
     
-    def creatFeatureByDate(self,date):
+    def creatFeatureByDate(self,date,stock_list):
         feature = []
         for creator in self.feature_creator_list:
-            feature_temp = creator.getFeatureByDate(date,self.stock_list,self.date_index_dict,self.inverse_date_index_dict)
-
+            feature_temp = creator.getFeatureByDate(date,stock_list,self.date_index_dict,self.inverse_date_index_dict)
+            
             feature_temp = np.concatenate(tuple(feature_temp),axis = -1)
-
             feature.append(feature_temp)
-        return np.concatenate(tuple(feature),axis = 0)
+
+
+        return np.concatenate(tuple(feature),axis = 1)
 
     def checkFeature():
         for creator in self.feature_creator_list:
