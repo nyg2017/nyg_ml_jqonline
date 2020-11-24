@@ -3,10 +3,10 @@ import numpy as np
 
 def login():
     print ("login JQDATA servering")
-    #account = "15210089516"
-    #password = "Ningyaguang1"
-    account = "13132110856" # "18620156503"
-    password = "Ningyaguang1"     #"3DKkypzN6uPj"
+    account = "15210089516"
+    password = "Ningyaguang1"
+    #account = "13132110856" # "18620156503"
+    #password = "Ningyaguang1"     #"3DKkypzN6uPj"
     jq.auth(account,password)
     print ("login successed!")    
     remain_query = jq.get_query_count()
