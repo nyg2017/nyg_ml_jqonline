@@ -1,1 +1,1 @@
-mongod --dbpath /usr/local/var/mongodb --logpath /usr/local/var/log/mongodb/mongo.log --fork 
+mongod --dbpath /Users/sumnap/DATABASE/MongoDB/mongodb --logpath /Users/sumnap/DATABASE/MongoDB/log/mongo.log

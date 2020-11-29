@@ -22,9 +22,16 @@ class PriceTable(BaseTable):
 
     def getPriceInfo(self,stock_list,date,fields = None):
         collection = self.table[date]
+        print (type(collection))
+        #a = collection.find({"code":stock_list[0]}).pretty()
+        a = collection.find({"code":stock_list[0]})
+        for i in a:
+            print (i)
+        print (a)
+        return 
         df = pd.DataFrame(list(collection.find()))
         a = df.loc[df["code"].isin(stock_list)]
-        print (a)
+
         
 
         
