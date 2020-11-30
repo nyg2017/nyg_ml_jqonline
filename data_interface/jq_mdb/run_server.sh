@@ -1,1 +1,1 @@
-mongod --dbpath /Users/sumnap/DATABASE/MongoDB/mongodb --logpath /Users/sumnap/DATABASE/MongoDB/log/mongo.log
+mongod --dbpath /home/tal100/DataBase/mongodb/mongodb --logpath /home/tal100/DataBase/mongodb/log/mongo.log
