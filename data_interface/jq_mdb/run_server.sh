@@ -1,1 +1,0 @@
-mongod --dbpath /home/tal100/DataBase/mongodb/mongodb --logpath /home/tal100/DataBase/mongodb/log/mongo.log
