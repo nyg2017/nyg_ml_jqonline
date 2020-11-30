@@ -4,3 +4,4 @@ DATA/*
 *.npy
 *.txt
 .vscode
+./data_interface/jq_mdb/run_server.sh
