@@ -3,8 +3,10 @@ from data_interface.jq_mdb.table.base_table import BaseTable
 import jqdatasdk as jq
 import pandas as pd
 import json
-fields = {'open' : 0, 'close' : 1, 'low' : 2, 'high' : 3, 'volume' : 4, 'money': 5,\
-     'factor' : 6, 'high_limit' : 7,'low_limit' : 8, 'avg' : 9, 'pre_close' : 10, 'paused' : 11, 'open_interest' : 12}
+from data_interface.jq_mdb.util.fromat import QA_util_date_stamp
+
+fields = ['open' , 'close' , 'low' , 'high' , 'volume' , 'money',\
+     'factor' , 'high_limit','low_limit', 'avg', 'pre_close', 'paused', 'open_interest']
 
 
 class PriceTable(BaseTable):
@@ -18,20 +20,58 @@ class PriceTable(BaseTable):
         for data in period_trade_date:
             securities = jq.get_all_securities(types=[], date=data)
             df = jq.get_price(security = list(securities.index),start_date=data, end_date=data, frequency='daily', fields=fields, skip_paused=False, fq='pre', count=None, panel=False, fill_paused=False)
-            self.table[data.strftime('%Y-%m-%d')].insert_many(json.loads(df.T.to_json()).values())
+            df = self.transform_2_jq_loc(df)
+            self.table.insert_many(json.loads(df.T.to_json()).values())
 
-    def getPriceInfo(self,stock_list,date,fields = None):
-        collection = self.table[date]
-        print (type(collection))
-        #a = collection.find({"code":stock_list[0]}).pretty()
-        a = collection.find({"code":stock_list[0]})
-        for i in a:
-            print (i)
-        print (a)
-        return 
-        df = pd.DataFrame(list(collection.find()))
-        a = df.loc[df["code"].isin(stock_list)]
+    def createIndex(self,):
+        #self.table.getIndexes()
+        self.table.create_index([('date_stamp',1),('code',1)])
+        print (self.table.index_information())
 
-        
+    def fetch(self,date,stock_list,fields):
+        cursor = self.table.find(
+            {
+                'code': {
+                    '$in': stock_list
+                },
+                "date_stamp":
+                    {
+                        "$eq": QA_util_date_stamp(date),
+                    }
+                
+            },
+            {"_id": 0},
+            batch_size=10000
+        )
+        res = pd.DataFrame([item for item in cursor])
+        return res
 
-        
+    def transform_2_jq_loc(self,df):
+    #def __transform_jq_to_qa(df, code, type_):
+        if df is None or len(df) == 0:
+            raise ValueError("没有聚宽数据")
+            
+        df.reset_index()
+        df["datetime"] = df.time
+        #df["code"] = code
+        #$df = df.set_index("datetime", drop=False)
+        df["date_stamp"] = df["datetime"].apply(lambda x: QA_util_date_stamp(x))
+
+        return df[[
+            "code",
+            "open",
+            "close",
+            "high",
+            "low",
+            "volume",
+            "money",
+            "factor",
+            "high_limit",
+            'low_limit', 
+            'avg', 
+            'pre_close',
+            'paused',
+            'open_interest',
+            "datetime",
+            "date_stamp",
+        ]]

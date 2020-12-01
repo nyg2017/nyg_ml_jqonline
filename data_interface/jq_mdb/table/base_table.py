@@ -1,9 +1,9 @@
 import pymongo  
 
 class BaseTable(object):
-    def __init__(self,client,table_name):
-        self.client = client
-        self.table = self.client[table_name]
+    def __init__(self,database,table_name):
+        self.database = database
+        self.table = self.database[table_name]
         self.table_name = table_name
 
     def getTableInfo(self,):
@@ -17,5 +17,7 @@ class BaseTable(object):
         self.table.command("dropDatabase")
         print ("price table deleted")
 
+
+    
     def insertInfo(self,):
         pass
