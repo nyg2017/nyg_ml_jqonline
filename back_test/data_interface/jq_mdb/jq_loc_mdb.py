@@ -1,6 +1,7 @@
 import jqdatasdk as jq
 import pymongo  
 from back_test.data_interface.jq_mdb.table.price_table import PriceTable
+from back_test.data_interface.jq_mdb.table.index_table import IndexTable
 
 
 
@@ -13,7 +14,7 @@ class JqLocMongoDB(object):
 
     def initTables(self,):
         self.price_table = PriceTable(self.database,"price_table")
-
+        self.index_table = IndexTable(self.database,"index_table")
 
 
 

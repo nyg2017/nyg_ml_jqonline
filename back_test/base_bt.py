@@ -55,7 +55,6 @@ if __name__ == "__main__":
     date_list = [date.strftime("%Y-%m-%d") for date in jq.get_trade_days(start_date=start_date, end_date=end_date, count=None)]
     bt = BaseBT(capital,base_index,fee_rate,slide_point,date_list[0],end_date,trade_mode)
 
-    print (date_list)
     for date in date_list:
         v = UserDataApi.validIndex(date,stock_list)
         stock_array = np.array(stock_list)[v]

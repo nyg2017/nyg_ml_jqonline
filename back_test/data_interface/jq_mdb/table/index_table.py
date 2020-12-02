@@ -9,19 +9,22 @@ fields = ['open' , 'close' , 'low' , 'high' , 'volume' , 'money',\
      'factor' , 'high_limit','low_limit', 'avg', 'pre_close', 'paused', 'open_interest']
 
 
-class PriceTable(BaseTable):
-    # def __init__(self,sql_con,sql_cur):
-    #     self.con = sql_con
-    #     self.sql_cur = sql_cur
+class IndexTable(BaseTable):
+    def __init__(self,database,table_name):
+        self.database = database
+        self.table = self.database[table_name]
+        self.table_name = "index_table"
+
     def insertInfo(self,start_date,end_date):
         #
         period_trade_date = jq.get_trade_days(start_date=start_date, end_date=end_date) # include start_date,end_date
         
         for date in period_trade_date:
             print ("inserting price table,date：",date)
-            securities = jq.get_all_securities(types=[], date=date)
+            securities = jq.get_all_securities(types=['index'], date=date)
             df = jq.get_price(security = list(securities.index),start_date=date, end_date=date, frequency='daily', fields=fields, skip_paused=False, fq='pre', count=None, panel=False, fill_paused=False)
             df = self.transform_2_jq_loc(df)
+        
             self.table.insert_many(json.loads(df.T.to_json()).values())
         
         self.createIndex()
@@ -33,13 +36,12 @@ class PriceTable(BaseTable):
 
 
     @classmethod
-    def fetch_one_day_price(cls,database,date,stock_list,fields):
-        table = database["price_table"]
-
+    def fetch_one_day_index(cls,database,date,stock_list,fields):
+        table = database["index_table"]
         cursor = table.find(
             {
                 'code': {
-                    '$in': stock_list
+                    '$eq': stock_list
                 },
                 "date_stamp":
                     {
@@ -54,7 +56,7 @@ class PriceTable(BaseTable):
         return res
     
     @classmethod
-    def fetch_mul_day_price(cls,database,start_date,end_date,stock_list,fields):
+    def fetch_mul_day_index(cls,database,start_date,end_date,stock_list,fields):
         table = database["price_table"]
         cursor = table.find(
             {
