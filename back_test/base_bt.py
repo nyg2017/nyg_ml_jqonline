@@ -8,6 +8,8 @@ from back_test.employee.inspector import Inspector
 from back_test.employee.painter import Painter
 from back_test.employee.analyst import Analyst
 
+
+
 class BaseBT(object):
     def __init__(self,capital,base_index,fee_rate,slide_point,start_date,end_date,position_mode):
         self.capital = capital

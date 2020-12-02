@@ -1,10 +1,10 @@
 import jqdatasdk as jq
 import pymongo  
-from data_interface.jq_mdb.table.price_table import PriceTable
+from back_test.data_interface.jq_mdb.table.price_table import PriceTable
 
 
 
-class QueryMongoDB(object):
+class JqLocMongoDB(object):
     def __init__(self,):
         self.client = pymongo.MongoClient(host='localhost', port=27017) 
         self.database = self.client["jq_loc"]
@@ -34,15 +34,15 @@ class QueryMongoDB(object):
 
 
 if __name__ == "__main__":
-    a = QueryMongoDB()
-    start_date = "2019-09-02"
-    end_date = "2019-09-10"
+    a = JqLocMongoDB()
+    start_date = "2019-01-01"
+    end_date = "2019-02-01"
     #a.price_table.deleteTable()
-    #a.price_table.insertInfo(start_date,end_date)
-    stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE',"asd","adgagasdg"]
+    a.price_table.insertInfo(start_date,end_date)
+    #@stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE',"asd","adgagasdg"]
     #a.price_table.getPriceInfo(stock_list = stock_list,date = start_date,fields = "close")
-    r = a.price_table.fetch(start_date,stock_list,"close")
+    #r = a.price_table.fetch(start_date,stock_list,"close")
 
-    print (r)
-    a.price_table.createIndex()
+    #print (r)
+    #a.price_table.createIndex()
 

@@ -4,3 +4,4 @@ DATA/*
 *.npy
 *.txt
 *.sh
+*settings.json
