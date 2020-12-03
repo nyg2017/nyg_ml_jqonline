@@ -5,8 +5,7 @@ import pandas as pd
 import json
 from data_interface.jq_mdb.util.fromat import QA_util_date_stamp
 
-fields = ['open' , 'close' , 'low' , 'high' , 'volume' , 'money',\
-     'factor' , 'high_limit','low_limit', 'avg', 'pre_close', 'paused', 'open_interest']
+fields = ['turnover_ratio']
 
 
 class TurnOverRatioTable(BaseTable):

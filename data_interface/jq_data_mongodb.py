@@ -9,7 +9,8 @@ import jqdatasdk as jq
 from data_interface.jq_mdb.table.price_table import PriceTable
 from data_interface.jq_mdb.table.index_table import IndexTable
 from data_interface.jq_mdb.table.turnover_ratio_table import TurnOverRatioTable
-
+from data_interface.jq_mdb.table.trade_days_table import TradeDayTable
+from data_interface.jq_mdb.table.all_security_table import AllSecurityTable
 
 
 
@@ -26,10 +27,15 @@ class JqMdb(object):
     def __init__(self,):
         self.client = pymongo.MongoClient(host='localhost', port=27017) 
         self.database = self.client["jq_loc"]
-        self.login()
+        #self.login()
 
     def login(self):
         login()
+
+    def getTradeDays(self,start_date,end_date):
+        result = TradeDayTable.fetch_period_trade_days(self.database,start_date,end_date)
+
+        return result
 
     def getClosePrices(self,date_time,stock_code_list):
         result = PriceTable.fetch_one_day_price(database = self.database, date = date_time,stock_list = stock_code_list,fields = ['close'])
@@ -110,7 +116,8 @@ class JqMdb(object):
     def isPublic(self,date_time,stock_list):
         v = np.zeros(len(stock_list),dtype = np.int)
         #result = jq.get_price(list(stock_list), start_date=date_time, end_date=date_time, frequency='daily', fields=['paused'], skip_paused=False, fq='pre', count=None, panel=True, fill_paused=True)
-        result = jq.get_all_securities(types=[], date=date_time)
+        #result = jq.get_all_securities(types=[], date=date_time)
+        result = AllSecurityTable.fetch_all_security(database = self.database,date=date_time)
         #print (result)
         code_list = list(result.index)
         for i,stock in enumerate(stock_list):

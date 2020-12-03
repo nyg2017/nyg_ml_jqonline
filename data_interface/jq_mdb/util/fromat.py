@@ -1,4 +1,5 @@
 import time
+import datetime
 
 
 def QA_util_date_stamp(date):
@@ -44,74 +45,39 @@ def QA_util_time_stamp(time_):
         return time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
 
 
-def __transform_jq_to_qa(df, code, type_):
-    if df is None or len(df) == 0:
-        raise ValueError("没有聚宽数据")
+def QA_util_stamp2datetime(timestamp):
+    """
+    explanation:
+        datestamp转datetime,pandas转出来的timestamp是13位整数 要/1000,
+        It’s common for this to be restricted to years from 1970 through 2038.
+        从1970年开始的纳秒到当前的计数 转变成 float 类型时间 类似 time.time() 返回的类型
+    
+    params:
+        * timestamp->
+            含义: 时间戳
+            类型: float
+            参数支持: []
+    
+    return:
+        datetime
+    """
+    try:
+        return datetime.datetime.fromtimestamp(timestamp)
+    except Exception as e:
+        # it won't work ??
+        try:
+            return datetime.datetime.fromtimestamp(timestamp / 1000)
+        except:
+            try:
+                return datetime.datetime.fromtimestamp(timestamp / 1000000)
+            except:
+                return datetime.datetime.fromtimestamp(timestamp / 1000000000)
 
-    df["datetime"] = df.time
-    #df["code"] = code
-    df["date"] = df.datetime.map(str).str.slice(0, 10)
-    df = df.set_index("datetime", drop=False)
-    df["date_stamp"] = df["date"].apply(lambda x: QA_util_date_stamp(x))
-    df["time_stamp"] = (
-        df["datetime"].map(str).apply(lambda x: QA_util_time_stamp(x)))
-    df["type"] = type_
-
-    return df[[
-        "open",
-        "close",
-        "high",
-        "low",
-        "volume",
-        "money",
-        "datetime",
-        "code",
-        "date",
-        "date_stamp",
-        "time_stamp",
-        "type",
-    ]]
-
-def transform_2_jq_loc(df):
-    #def __transform_jq_to_qa(df, code, type_):
-        if df is None or len(df) == 0:
-            raise ValueError("没有聚宽数据")
-
-        df["datetime"] = df.time
-        #df["code"] = code
-        df = df.set_index("datetime", drop=False)
-        df["date_stamp"] = df["datetime"].apply(lambda x: QA_util_date_stamp(x))
-
-        return df[[
-            "code",
-            "open",
-            "close",
-            "high",
-            "low",
-            "volume",
-            "money",
-            "datetime",
-            "date_stamp",
-        ]]
-
+    #
 
 
 if __name__ == "__main__":
-    from back_test.data_interface.jq_data_online import login
-    import jqdatasdk as jq
-    login()
-    start_date = "2019-09-02"
-    end_date = "2019-09-10"
-    #a.price_table.deleteTable()
-    #a.price_table.insertInfo(start_date,end_date)
-    stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE']
-    #result = jq.get_bars(stock_list, count = 5, unit='1m',
-    #     fields=['date', 'open', 'close', 'high', 'low', 'volume', 'money','factor'],
-    #     include_now=False, end_dt=None, fq_ref_date=None,df=True)
-         
-    result = jq.get_price(list(stock_list), start_date=start_date, end_date=start_date, frequency='daily', skip_paused=False, fq='pre', count=None, panel=True, fill_paused=True)
-    a = transform_2_jq_loc(result)
-    
-    import numpy as np
-    np.set_printoptions(suppress=True)
-    print (a)
+    date = "2020-01-12"
+    a = QA_util_date_stamp(date)
+    b = QA_util_stamp2datetime(a)
+    print (b)

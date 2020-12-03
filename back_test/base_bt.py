@@ -35,10 +35,10 @@ class BaseBT(object):
 
 
 if __name__ == "__main__":
-    from back_test.data_interface.jq_data import login
-    import jqdatasdk as jq
-    from back_test.data_interface.data_api import UserDataApi
-    login()
+    #from back_test.data_interface.jq_data import login
+    #import jqdatasdk as jq
+    from data_interface.data_api import UserDataApi
+    #login()
     capital = 1000000
     base_index = '000001.XSHG'
     weight_mode = ""
@@ -52,7 +52,8 @@ if __name__ == "__main__":
     stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE']
     from datetime import datetime, date
     from datetime import timedelta
-    date_list = [date.strftime("%Y-%m-%d") for date in jq.get_trade_days(start_date=start_date, end_date=end_date, count=None)]
+    date_list = UserDataApi.getTradeDays(start_date=start_date, end_date=end_date)
+
     bt = BaseBT(capital,base_index,fee_rate,slide_point,date_list[0],end_date,trade_mode)
 
     for date in date_list:

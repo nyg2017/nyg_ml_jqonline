@@ -3,7 +3,8 @@ import pymongo
 from data_interface.jq_mdb.table.price_table import PriceTable
 from data_interface.jq_mdb.table.index_table import IndexTable
 from data_interface.jq_mdb.table.turnover_ratio_table import TurnOverRatioTable
-
+from data_interface.jq_mdb.table.trade_days_table import TradeDayTable
+from data_interface.jq_mdb.table.all_security_table import AllSecurityTable
 
 
 class JqLocMongoDB(object):
@@ -17,7 +18,8 @@ class JqLocMongoDB(object):
         self.price_table = PriceTable(self.database,"price_table")
         self.index_table = IndexTable(self.database,"index_table")
         self.turnover_ratio_table = TurnOverRatioTable(self.database,"turnover_ratio_table")
-
+        self.trade_days_table = TradeDayTable(self.database,"trade_days_table")
+        self.all_security_table = AllSecurityTable(self.database,"all_security_table")
 
 
     def initJq(self,):
@@ -38,13 +40,17 @@ class JqLocMongoDB(object):
 
 if __name__ == "__main__":
     a = JqLocMongoDB()
-    start_date = "2019-01-01"
-    end_date = "2020-12-31"
+    start_date = "2019-01-02"
+    end_date = "2019-01-02"
     #a.price_table.deleteTable()
     #a.index_table.insertInfo(start_date,end_date)
     #a.price_table.insertInfo(start_date,end_date)
     #a.turnover_ratio_table.insertInfo(start_date,end_date)
-    a.turnover_ratio_table.createIndex()
+
+    #a.trade_days_table.insertInfo(start_date,end_date)
+    a.all_security_table.insertInfo(start_date,end_date)
+    a = AllSecurityTable.fetch_all_security(a.database,start_date)
+    print (a)
 
     #@stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE',"asd","adgagasdg"]
     #a.price_table.getPriceInfo(stock_list = stock_list,date = start_date,fields = "close")
