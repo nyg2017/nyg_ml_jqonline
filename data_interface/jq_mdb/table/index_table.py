@@ -20,7 +20,7 @@ class IndexTable(BaseTable):
         period_trade_date = jq.get_trade_days(start_date=start_date, end_date=end_date) # include start_date,end_date
         
         for date in period_trade_date:
-            print ("inserting price table,date：",date)
+            print ("inserting index table,date：",date)
             securities = jq.get_all_securities(types=['index'], date=date)
             df = jq.get_price(security = list(securities.index),start_date=date, end_date=date, frequency='daily', fields=fields, skip_paused=False, fq='pre', count=None, panel=False, fill_paused=False)
             df = self.transform_2_jq_loc(df)

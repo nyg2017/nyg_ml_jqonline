@@ -22,6 +22,17 @@ class JqLocMongoDB(object):
         self.all_security_table = AllSecurityTable(self.database,"all_security_table")
 
 
+    def updateTables(self,start_date,end_date):
+        self.price_table.insertInfo(start_date,end_date)
+        self.index_table.insertInfo(start_date,end_date)
+        self.turnover_ratio_table.insertInfo(start_date,end_date)
+        self.trade_days_table.insertInfo(start_date,end_date)
+        self.all_security_table.insertInfo(start_date,end_date)
+
+    def deleteDB(self,):
+        self.database.dropDatabase()
+        print (self.database)
+
     def initJq(self,):
         print ("login JQDATA servering")
         account = "15210089516"#"15210089516"
@@ -40,18 +51,11 @@ class JqLocMongoDB(object):
 
 if __name__ == "__main__":
     a = JqLocMongoDB()
-    start_date = "2019-01-02"
-    end_date = "2019-01-02"
-    #a.price_table.deleteTable()
-    #a.index_table.insertInfo(start_date,end_date)
-    #a.price_table.insertInfo(start_date,end_date)
-    #a.turnover_ratio_table.insertInfo(start_date,end_date)
-
-    #a.trade_days_table.insertInfo(start_date,end_date)
-    a.all_security_table.insertInfo(start_date,end_date)
-    a = AllSecurityTable.fetch_all_security(a.database,start_date)
-    print (a)
-
+    start_date = "2020-01-01"
+    end_date = "2020-11-30"
+    #a.deleteDB()
+    a.updateTables(start_date,end_date)
+    
     #@stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE',"asd","adgagasdg"]
     #a.price_table.getPriceInfo(stock_list = stock_list,date = start_date,fields = "close")
     #r = a.price_table.fetch(start_date,stock_list,"close")
