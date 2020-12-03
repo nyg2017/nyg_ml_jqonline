@@ -2,6 +2,7 @@ import jqdatasdk as jq
 import pymongo  
 from data_interface.jq_mdb.table.price_table import PriceTable
 from data_interface.jq_mdb.table.index_table import IndexTable
+from data_interface.jq_mdb.table.turnover_ratio_table import TurnOverRatioTable
 
 
 
@@ -15,6 +16,7 @@ class JqLocMongoDB(object):
     def initTables(self,):
         self.price_table = PriceTable(self.database,"price_table")
         self.index_table = IndexTable(self.database,"index_table")
+        self.turnover_ratio_table = TurnOverRatioTable(self.database,"turnover_ratio_table")
 
 
 
@@ -37,10 +39,13 @@ class JqLocMongoDB(object):
 if __name__ == "__main__":
     a = JqLocMongoDB()
     start_date = "2019-01-01"
-    end_date = "2019-12-31"
+    end_date = "2020-12-31"
     #a.price_table.deleteTable()
-    a.index_table.insertInfo(start_date,end_date)
-    a.price_table.insertInfo(start_date,end_date)
+    #a.index_table.insertInfo(start_date,end_date)
+    #a.price_table.insertInfo(start_date,end_date)
+    #a.turnover_ratio_table.insertInfo(start_date,end_date)
+    a.turnover_ratio_table.createIndex()
+
     #@stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE',"asd","adgagasdg"]
     #a.price_table.getPriceInfo(stock_list = stock_list,date = start_date,fields = "close")
     #r = a.price_table.fetch(start_date,stock_list,"close")

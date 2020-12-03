@@ -38,6 +38,8 @@ def getTurnoverRatio(date_time,stock_code_list):
     
     
     result = jq.get_fundamentals_continuously(query, end_date=date_time, count=1)
+    print (result)
+    #result = jq.get_fundamentals_continuously(query, start_date=date_time,end_date=date_time)
     code = list(result['code'])
     cps = list(result['turnover_ratio'])
     code_cps_dict = dict(zip(code,cps))
@@ -92,3 +94,4 @@ if __name__ == "__main__":
     date_time = "2012-09-11"
     #code = ['002100.XSHE']
     #a = jq.get_price(list(code), start_date=date_time, end_date=date_time, frequency='daily', fields=['high','low'], skip_paused=False, fq='pre', count=None, panel=True, fill_paused=True)
+    getTurnoverRatio(date_time,code)

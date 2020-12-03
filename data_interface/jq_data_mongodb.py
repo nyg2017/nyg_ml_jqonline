@@ -8,6 +8,7 @@ import jqdatasdk as jq
 
 from data_interface.jq_mdb.table.price_table import PriceTable
 from data_interface.jq_mdb.table.index_table import IndexTable
+from data_interface.jq_mdb.table.turnover_ratio_table import TurnOverRatioTable
 
 
 
@@ -93,13 +94,13 @@ class JqMdb(object):
         res = paddingNoCode(stock_code_list,code_vol_dict)
         return res
 
-    def getTurnoverRatio(date_time,stock_code_list):
-        query = jq.query(
-                    jq.valuation.turnover_ratio
-                    ).filter(jq.valuation.code.in_(stock_code_list))
+    def getTurnoverRatio(self,date_time,stock_code_list):
+        # query = jq.query(
+        #             jq.valuation.turnover_ratio
+        #             ).filter(jq.valuation.code.in_(stock_code_list))
         
-        
-        result = jq.get_fundamentals_continuously(query, end_date=date_time, count=1)
+        # result = jq.get_fundamentals_continuously(query, end_date=date_time, count=1)
+        result = TurnOverRatioTable.fetch_one_day_turnover_rate(database = self.database, date = date_time,stock_list = stock_code_list,fields = ['turnover_ratio'])
         code = list(result['code'])
         cps = list(result['turnover_ratio'])
         code_cps_dict = dict(zip(code,cps))
