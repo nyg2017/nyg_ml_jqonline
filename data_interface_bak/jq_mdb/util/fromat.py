@@ -1,3 +1,4 @@
+from data_interface.jq_data_online import login
 import time
 
 
@@ -97,7 +98,6 @@ def transform_2_jq_loc(df):
 
 
 if __name__ == "__main__":
-    from back_test.data_interface.jq_data_online import login
     import jqdatasdk as jq
     login()
     start_date = "2019-09-02"

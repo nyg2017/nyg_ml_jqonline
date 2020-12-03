@@ -1,10 +1,9 @@
-from date_interface import jq_data_online
-
-
-
+from data_interface import jq_data
+from data_interface.jq_data_mongodb import JqMdb
 
 data_api_dict = {
-    "jq":jq_data_online
+    "jq":jq_data,
+    "jq_mdb":JqMdb()
 }
 
-UserDataApi = data_api_dict['jq']
+UserDataApi = data_api_dict['jq_mdb']

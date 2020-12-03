@@ -33,13 +33,12 @@ class PriceTable(BaseTable):
 
 
     @classmethod
-    def fetch_one_day_price(cls,database,date,stock_list,fields = fields):
+    def fetch_one_day_price(cls,database,date,stock_list,fields):
         table = database["price_table"]
-
         cursor = table.find(
             {
                 'code': {
-                    '$in': list(stock_list)
+                    '$in': stock_list
                 },
                 "date_stamp":
                     {

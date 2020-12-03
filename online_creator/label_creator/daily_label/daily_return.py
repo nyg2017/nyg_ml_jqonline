@@ -2,7 +2,7 @@ from online_creator.label_creator.daily_label.daily_base_label import DailyLabel
 import jqdatasdk as jq
 import pandas as pd
 import numpy as np
-from date_interface.data_api import UserDataApi
+from data_interface.data_api import UserDataApi
 
 reorder = False
 fields = ['open', 'close', 'low', 'high','factor', 'avg', 'pre_close', 'paused']

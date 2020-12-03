@@ -1,7 +1,7 @@
 import jqdatasdk as jq
 import pymongo  
-from back_test.data_interface.jq_mdb.table.price_table import PriceTable
-from back_test.data_interface.jq_mdb.table.index_table import IndexTable
+from data_interface.jq_mdb.table.price_table import PriceTable
+from data_interface.jq_mdb.table.index_table import IndexTable
 
 
 

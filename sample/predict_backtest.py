@@ -5,7 +5,7 @@ from online_creator.feature import Feature
 from online_creator.label import Label
 import json
 import numpy as np
-from date_interface.data_api import UserDataApi
+from data_interface.data_api import UserDataApi
 #from .fixes import _object_dtype_isnan
 import jqdatasdk as jq
 from back_test.base_bt import BaseBT
