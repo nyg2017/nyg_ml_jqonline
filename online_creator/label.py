@@ -21,10 +21,10 @@ def init_label_list(feature_cfg):
 
 
 class Label(object):
-    def __init__(self,feature_cfg,early_date = "2010-10-10",last_date = "2020-10-10"):
+    def __init__(self,feature_cfg,UserDataApi,early_date = "2010-10-10",last_date = "2020-10-10"):
         self.cfg = feature_cfg
         #self.stock_list = stock_list
-
+        self.UserDataApi = UserDataApi
         self.start_date = self.cfg['start']
         self.end_date = self.cfg['end']
         self.label_creator_list = init_label_list(self.cfg["label_cfg"])
@@ -33,7 +33,7 @@ class Label(object):
 
     def initDateIndexDict(self,early_date,last_date):
 
-        trade_date_arr = jq.get_trade_days(early_date,last_date)
+        trade_date_arr = self.UserDataApi.get_trade_days(early_date,last_date)
         self.trade_date_list = dateArr2List(trade_date_arr)
         self.date_index_dict = list2Dic(self.trade_date_list)
         self.inverse_date_index_dict = invert_dict(self.date_index_dict )

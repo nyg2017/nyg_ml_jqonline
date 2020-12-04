@@ -2,17 +2,17 @@ import pandas as pd
 import numpy as np
 import os
 from back_test.employee.positionspilitor import PositionSpilitor
-from data_interface.data_api import UserDataApi
 from back_test.employee.inspector import Inspector
 
 class StockTrader(object):
-    def __init__(self,fee_rate,slide_point,bookkeeper,position_mode):
+    def __init__(self,fee_rate,slide_point,bookkeeper,position_mode,UserDataApi):
         self.fee = fee_rate
         self.slide_point = slide_point
         self.position_mode = position_mode
         self.bookkeeper = bookkeeper
         self.position_spilitor = PositionSpilitor(position_mode,bookkeeper)
-        self.inspector = Inspector()
+        self.UserDataApi = UserDataApi
+        self.inspector = Inspector(self.UserDataApi)
 
     def sell(self,target_code,target_info,last_hold_by_code):
         last_aver_cost = last_hold_by_code['aver_cost']
@@ -104,7 +104,7 @@ class StockTrader(object):
         last_stock_list = last_hold_state_dict.keys()
 
         stock_list = list(set(target_stock_pool).union(set(last_stock_list)))
-        price_list = UserDataApi.getClosePrices(date_time = date_time,stock_code_list = stock_list)
+        price_list = self.UserDataApi.getClosePrices(date_time = date_time,stock_code_list = stock_list)
         tradeable_array = self.inspector.tradeableCheck(date_time= date_time,stock_code_list = stock_list)
 
         return dict(zip(stock_list,price_list)),dict(zip(stock_list,list(tradeable_array)))

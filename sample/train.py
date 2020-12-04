@@ -9,13 +9,13 @@ from data_interface.data_api import UserDataApi
 #from .fixes import _object_dtype_isnan
 import jqdatasdk as jq
 
-UserDataApi.login()
 buffered_feature = False
 
 def train(train_cfg):
     with open(train_cfg,"r") as f:
         train_cfg = json.load(f)
 
+    UserDataApi = UserDataApi()
     feature_cfg = train_cfg["feature_cfg"]
     model_name = train_cfg["model"]
     model_cfg = train_cfg["model_cfg"]
@@ -27,8 +27,8 @@ def train(train_cfg):
     
     #print (stock_array)
 
-    feature_creator = Feature(feature_cfg)
-    label_creator = Label(feature_cfg)
+    feature_creator = Feature(feature_cfg,UserDataApi)
+    label_creator = Label(feature_cfg,UserDataApi)
     model = build_model(model_name,model_cfg)
 
     if not buffered_feature:

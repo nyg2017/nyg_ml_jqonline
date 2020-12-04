@@ -1,18 +1,17 @@
 import numpy as np
-from data_interface.data_api import UserDataApi
 
 
 class Inspector(object):
-    def __init__(self,):
-        pass
+    def __init__(self,UserDataApi):
+        self.UserDataApi = UserDataApi
         
 
     def suspensionCheck(self,date_time,stock_code_list):
-        suspension = UserDataApi.getSuspensionInfor(date_time,stock_code_list)
+        suspension = self.UserDataApi.getSuspensionInfor(date_time,stock_code_list)
         return np.array(suspension)
 
     def limitCheck(self,date_time,stock_code_list):
-        limit = UserDataApi.getLimitInfor(date_time,stock_code_list)
+        limit = self.UserDataApi.getLimitInfor(date_time,stock_code_list)
         return np.array(limit)
 
     def tradeableCheck(self,date_time,stock_code_list):

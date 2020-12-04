@@ -24,7 +24,7 @@ def init_feature_list(feature_cfg):
 
 
 class Feature(object):
-    def __init__(self,feature_cfg,early_date = "2010-10-10",last_date = "2020-10-10"):
+    def __init__(self,feature_cfg,UserDataApi,early_date = "2010-10-10",last_date = "2020-10-10"):
         self.cfg = feature_cfg
         #self.stock_list = stock_list
         self.start_date = self.cfg['start']

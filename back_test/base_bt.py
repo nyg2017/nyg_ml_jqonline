@@ -7,15 +7,18 @@ from back_test.employee.indextrader import IndexTrader
 from back_test.employee.inspector import Inspector
 from back_test.employee.painter import Painter
 from back_test.employee.analyst import Analyst
+from data_interface.data_api import UserDataApi
 
 
 
 class BaseBT(object):
     def __init__(self,capital,base_index,fee_rate,slide_point,start_date,end_date,position_mode):
         self.capital = capital
+        self.UserDataApi = UserDataApi()
+
         self.bookkeeper = BookKeeper(ori_capital=capital,start_date = start_date)
-        self.stocktrader = StockTrader(fee_rate,slide_point,self.bookkeeper,position_mode)
-        self.indextrader = IndexTrader(base_index,start_date = start_date,bookkeeper = self.bookkeeper)
+        self.stocktrader = StockTrader(fee_rate,slide_point,self.bookkeeper,position_mode,UserDataApi = self.UserDataApi)
+        self.indextrader = IndexTrader(base_index,start_date = start_date,bookkeeper = self.bookkeeper,UserDataApi = self.UserDataApi)
         self.painter = Painter(self.bookkeeper)
         self.analyst = Analyst()
 
