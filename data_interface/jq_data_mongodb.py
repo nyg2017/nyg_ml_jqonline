@@ -1,10 +1,10 @@
 
 
 import pymongo
-from data_interface.jq_data import login
+#from data_interface.jq_data import login
 import numpy as np
-import jqdatasdk as jq
-
+#import jqdatasdk as jq
+from data_interface.jq_mdb.util.fromat import df2Array
 
 from data_interface.jq_mdb.table.price_table import PriceTable
 from data_interface.jq_mdb.table.index_table import IndexTable
@@ -34,7 +34,6 @@ class JqMdb(object):
 
     def getTradeDays(self,start_date,end_date):
         result = TradeDayTable.fetch_period_trade_days(self.database,start_date,end_date)
-
         return result
 
     def getClosePrices(self,date_time,stock_code_list):
@@ -46,9 +45,10 @@ class JqMdb(object):
         res = paddingNoCode(stock_code_list,code_cps_dict)
         return res
 
-    def getPriceInfo(self,date_time,stock_code_list):
-        result = PriceTable.fetch_one_day_price(database = self.database, date = date_time,stock_list = stock_code_list)
-        return res
+    def getPriceInfo(self,date_time,stock_code_list,fields = None):
+        result = PriceTable.fetch_one_day_price(database = self.database, date = date_time,stock_list = stock_code_list,fields = fields)
+        result,col_name_dic = df2Array(stock_code_list,result)
+        return result,col_name_dic
 
     def getIndexValue(self,date_time,index):
         result = IndexTable.fetch_one_day_index(database = self.database, date = date_time,stock_list = index,fields = ['close'])
@@ -100,17 +100,10 @@ class JqMdb(object):
         res = paddingNoCode(stock_code_list,code_vol_dict)
         return res
 
-    def getTurnoverRatio(self,date_time,stock_code_list):
-        # query = jq.query(
-        #             jq.valuation.turnover_ratio
-        #             ).filter(jq.valuation.code.in_(stock_code_list))
-        
-        # result = jq.get_fundamentals_continuously(query, end_date=date_time, count=1)
-        result = TurnOverRatioTable.fetch_one_day_turnover_rate(database = self.database, date = date_time,stock_list = stock_code_list,fields = ['turnover_ratio'])
-        code = list(result['code'])
-        cps = list(result['turnover_ratio'])
-        code_cps_dict = dict(zip(code,cps))
-        return np.array([code_cps_dict[k] for k in stock_code_list])
+    def getTurnoverRatio(self,date_time,stock_code_list,fields):
+        result = TurnOverRatioTable.fetch_one_day_turnover_rate(database = self.database, date = date_time,stock_list = stock_code_list,fields = fields)
+        result,col_name_dic = df2Array(stock_code_list,result)
+        return result,col_name_dic
 
 
     def isPublic(self,date_time,stock_list):
@@ -130,3 +123,7 @@ class JqMdb(object):
 
 if __name__ == "__main__":
     jq_loc = JqMdb()
+    date = "2020-02-24"
+    stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE','slkhjf']
+    a,name = jq_loc.getPriceInfo(date,stock_list)
+    print (a.shape[1],len(name))

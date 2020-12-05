@@ -4,9 +4,10 @@ import numpy as np
 
 
 class DailyFeatureBase(object):
-    def __init__(self,cfg):
-        pass
-
+    def __init__(self,cfg,key):
+        self.cfg = cfg
+        self.name = key
+    
     def getFeatureByDate(self,date,stock_list,date_index_dict):
 
         pass

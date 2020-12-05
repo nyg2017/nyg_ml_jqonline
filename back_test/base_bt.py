@@ -14,7 +14,7 @@ from data_interface.data_api import UserDataApi
 class BaseBT(object):
     def __init__(self,capital,base_index,fee_rate,slide_point,start_date,end_date,position_mode):
         self.capital = capital
-        self.UserDataApi = UserDataApi()
+        self.UserDataApi = UserDataApi
 
         self.bookkeeper = BookKeeper(ori_capital=capital,start_date = start_date)
         self.stocktrader = StockTrader(fee_rate,slide_point,self.bookkeeper,position_mode,UserDataApi = self.UserDataApi)
@@ -42,13 +42,14 @@ if __name__ == "__main__":
     #import jqdatasdk as jq
     from data_interface.data_api import UserDataApi
     #login()
+    UserDataApi = UserDataApi()
     capital = 1000000
     base_index = '000001.XSHG'
     weight_mode = ""
     fee_rate = 0.00005
     slide_point = 0.01
-    start_date = "2019-01-01"
-    end_date = "2019-01-31"
+    start_date = "2020-01-01"
+    end_date = "2020-01-31"
     trade_mode = "mean"
     total_position = 0.95
     #stock_list = ['300031.XSHE', '002605.XSHE', '002467.XSHE', '000835.XSHE', '300052.XSHE', '300242.XSHE', '300226.XSHE', '002447.XSHE', '300295.XSHE', '600804.XSHG', '000503.XSHE', '300113.XSHE', '300043.XSHE', '300104.XSHE', '002095.XSHE']

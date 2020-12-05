@@ -1,6 +1,6 @@
 import time
 import datetime
-
+import numpy as np
 
 def QA_util_date_stamp(date):
     """
@@ -75,6 +75,23 @@ def QA_util_stamp2datetime(timestamp):
 
     #
 
+
+def df2Array(stock_list,df):
+    values = df.values
+
+    col_name = df.columns.values
+    codes = values[:,0]
+    values = values[:,1:]
+    re_array = np.full((len(stock_list),values.shape[1]),fill_value = np.nan)
+
+    for i,code in enumerate(codes):
+        j = i
+        while(code != stock_list[j]):
+            j+=1
+        codes[i] = j
+    re_array[codes.tolist()] = values
+    col_name_dic = dict(zip(col_name[1:],[i for i in range(len(col_name[1:]))]))
+    return re_array,col_name_dic
 
 if __name__ == "__main__":
     date = "2020-01-12"

@@ -15,61 +15,41 @@ query_func_dict = {
 
 
 
-
-
-def queryAndBuffer(date,stock_list,buffer_dict,query_func):
+def volumnVar(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi):
     
-    
-    if date not in buffer_dict.keys():
-        v = query_func_dict[query_func](date,stock_list)
-        #p = jq.get_volomn(stock_list, start_date=date, end_date=date, frequency='daily', fields='getVolumn', skip_paused=False, fq='pre', count=None, panel=False, fill_paused=True)
-        buffer_dict[date] = v
-
-    return buffer_dict[date]
-
-
-
-def volumnVar(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,volomn_buffer):
-
-    #base_volomn = queryAndBuffer(date,stock_list,volomn_buffer)
-    volomn_buffer['volumn'] = dict()
     date_index = date_index_dict[date]    
     re_var_f = []
     for var in params_list:
-        
         base_date = inverse_date_index_dict[date_index - var-1]
         future_date = inverse_date_index_dict[date_index - var]
-        base_volomn = queryAndBuffer(base_date,stock_list,volomn_buffer['volumn'],"volumn")
-        future_volomn = queryAndBuffer(future_date,stock_list,volomn_buffer['volumn'],"volumn")
-
-        #base_volomn = base_volomn.values[:,2:-2]
-        #future_volomn = future_volomn.values[:,2:-2]
-
-        var_f = (future_volomn - base_volomn)/(base_volomn + 1)
-        
-        #print ("var_f_v shape",var_f.shape)
-        re_var_f.append(var_f[...,np.newaxis])  
+        base_price_info, column_name_dic = UserDataApi.getPriceInfo(base_date,stock_list,fields = ["volume"])
+        future_price_info, column_name_dic = UserDataApi.getPriceInfo(future_date,stock_list,fields = ["volume"])
+        base_close_p = base_price_info[:,column_name_dic["volume"]]
+        future_close_p = future_price_info[:,column_name_dic["volume"]]
+        var_f = (future_close_p - base_close_p)/base_close_p
+        re_var_f.append(var_f.reshape(-1,1)) 
     
-    return re_var_f
+    return np.concatenate(tuple(re_var_f),axis= -1)
 
 
-def turnover(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,volomn_buffer):
-    volomn_buffer['turnover'] = dict()
+
+def turnover(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi):
+
     date_index = date_index_dict[date]    
     re_turnover_f = []
     for n in params_list:
         base_date = inverse_date_index_dict[date_index - n]
-        turnover = queryAndBuffer(base_date,stock_list,volomn_buffer['turnover'],"turnover")
+        turnover_info ,column_name_dic = UserDataApi.getTurnoverRatio(base_date,stock_list,fields = ["turnover_ratio"])
+        turnover = turnover_info[column_name_dic["turnover_ratio"]]
         re_turnover_f.append(turnover[...,np.newaxis])
-    return re_turnover_f
+    return np.concatenate(tuple(re_turnover_f),axis= -1)
 
-def SumNDayturnover(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,volomn_buffer):
+def SumNDayturnover(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi):
 
     #base_volomn = queryAndBuffer(date,stock_list,volomn_buffer)
     volomn_buffer['turnover'] = dict()
     date_index = date_index_dict[date]    
-    re_sum_n_turnover_f = []
-    base_date = inverse_date_index_dict[date_index -1]
+    re_sum_n_turnover_f = []   
     base_turnover = queryAndBuffer(base_date,stock_list,volomn_buffer['turnover'],"turnover")
     temp_days_count = 1
     for n in params_list:
@@ -91,24 +71,15 @@ func_dic = {
         }
 
 class DailyVolumeFeature(DailyFeatureBase):
-    def __init__(self,cfg):
-        self.cfg = cfg
 
-    def getFeatureByDate(self,date,stock_list,date_index_dict,inverse_date_index_dict):
+
+    def getFeatureByDate(self,date,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi):
         
-        features = []
-        volomn_buffer = dict()
+        features = dict()
         #print (self.cfg)
         for key,params_list in self.cfg.items():
-            
-            f = func_dic[key](date,params_list,stock_list,date_index_dict,inverse_date_index_dict,volomn_buffer)
-
-            features += f
-        
-
-        #for f in features:
-        #    print (f.shape)
-        return features
+            features[key] = func_dic[key](date,params_list,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi)
+        return features,self.name
 
     
     def groupOp(self,date):

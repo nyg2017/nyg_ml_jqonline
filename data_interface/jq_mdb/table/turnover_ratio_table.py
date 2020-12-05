@@ -53,7 +53,9 @@ class TurnOverRatioTable(BaseTable):
             batch_size=10000
         )
         res = pd.DataFrame([item for item in cursor])
-        return res
+        res.reset_index()
+        return res[["code",
+            "turnover_ratio"]]
     
     @classmethod
     def fetch_mul_day_turnover_rate(cls,database,start_date,end_date,stock_list,fields):
@@ -74,7 +76,7 @@ class TurnOverRatioTable(BaseTable):
             batch_size=10000
         )
         res = pd.DataFrame([item for item in cursor])
-        return res
+        return res[["code","turnover_ratio"]]
 
 
 
