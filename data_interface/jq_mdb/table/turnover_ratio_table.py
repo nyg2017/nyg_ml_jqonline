@@ -76,8 +76,7 @@ class TurnOverRatioTable(BaseTable):
             batch_size=10000
         )
         res = pd.DataFrame([item for item in cursor])
-        return res[["code","turnover_ratio"]]
-
+        return res
 
 
 

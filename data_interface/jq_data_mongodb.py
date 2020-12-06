@@ -105,6 +105,8 @@ class JqMdb(object):
         result,col_name_dic = df2Array(stock_code_list,result)
         return result,col_name_dic
 
+    def getMulDayTurnoverRatio(self,start_date,end_date,stock_list,fields):
+        return TurnOverRatioTable.fetch_mul_day_turnover_rate(database = self.database, start_date = start_date, end_date = end_date, stock_list = stock_list , fields = fields)
 
     def isPublic(self,date_time,stock_list):
         v = np.zeros(len(stock_list),dtype = np.int)

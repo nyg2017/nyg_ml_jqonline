@@ -14,7 +14,8 @@
         },
         "v":{
             "var":[1,2,3],
-            "turnover":[1,2,3]
+            "turnover":[1,2,3],
+            "sum_n_turnover":[1,2,3]
         }
     },
     "intval_cfg":{},
