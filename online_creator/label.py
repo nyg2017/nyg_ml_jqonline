@@ -45,6 +45,7 @@ class Label(object):
         for date in self.date_list:
             daily_label = self.creatLabelByDate(date,stock_list)
             self.label_dict["label_all"][date] = daily_label
+            self.label_dict["label_all"][date]["valid_index"] = UserDataApi.getSuspensionInfor(date,stock_list)
 
         return self.label_dict
     # def createBatch(self,idx_list):
@@ -82,4 +83,4 @@ if __name__ == "__main__":
 
     f = Label(feature_cfg,UserDataApi)
     label_all = f.createLabelAll(stock_list)
-    print (label_all["label_all"]["2020-03-04"]["return"])
+    print (label_all["label_all"]["2020-03-04"]["valid_index"])

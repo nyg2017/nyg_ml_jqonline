@@ -24,9 +24,6 @@ def train(train_cfg):
     with open(feature_cfg,"r") as f:
         feature_cfg = json.load(f)
 
-    
-    #print (stock_array)
-
     feature_creator = Feature(feature_cfg,UserDataApi)
     label_creator = Label(feature_cfg,UserDataApi)
     model = build_model(model_name,model_cfg)

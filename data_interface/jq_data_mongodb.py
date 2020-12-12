@@ -67,7 +67,7 @@ class JqMdb(object):
         var = suspened_info_df['paused']
 
         sus_dict = dict(zip(code,var))
-        res = paddingNoCode(stock_list,sus_dict)
+        res = paddingNoCode(stock_list,sus_dict,padding=1.0)
         #return np.array([sus_dict[k] == 0 for k in stock_list])
         return res == 0.0
 
