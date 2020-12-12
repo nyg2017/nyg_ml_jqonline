@@ -10,13 +10,13 @@ fields = ['open', 'close', 'low', 'high','factor', 'avg', 'pre_close', 'paused']
 reorder = False
 
 
-def query_and_buffer(date,stock_list,price_buffer):
+# def query_and_buffer(date,stock_list,price_buffer):
       
-    if date not in price_buffer.keys():
-        p = jq.get_price(list(stock_list), start_date=date, end_date=date, frequency='daily', fields=fields, skip_paused=False, fq='pre', count=None, panel=False, fill_paused=True)
-        price_buffer[date] = p
+#     if date not in price_buffer.keys():
+#         p = jq.get_price(list(stock_list), start_date=date, end_date=date, frequency='daily', fields=fields, skip_paused=False, fq='pre', count=None, panel=False, fill_paused=True)
+#         price_buffer[date] = p
 
-    return price_buffer[date]
+#     return price_buffer[date]
 
 def var(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi):
 

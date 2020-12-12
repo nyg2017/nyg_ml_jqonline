@@ -16,7 +16,7 @@ label_creator_dic = {
 def init_label_list(feature_cfg):
     re_list = []
     for key in feature_cfg.keys():
-        re_list.append(label_creator_dic[key](feature_cfg[key]))
+        re_list.append(label_creator_dic[key](key,feature_cfg[key]))
     return re_list
 
 
@@ -28,27 +28,25 @@ class Label(object):
         self.start_date = self.cfg['start']
         self.end_date = self.cfg['end']
         self.label_creator_list = init_label_list(self.cfg["label_cfg"])
+        self.label_dict = dict()
         self.initDateIndexDict(early_date,last_date)
-    
 
     def initDateIndexDict(self,early_date,last_date):
-
-        trade_date_arr = self.UserDataApi.get_trade_days(early_date,last_date)
-        self.trade_date_list = dateArr2List(trade_date_arr)
+        self.trade_date_list = UserDataApi.getTradeDays(early_date,last_date)
         self.date_index_dict = list2Dic(self.trade_date_list)
         self.inverse_date_index_dict = invert_dict(self.date_index_dict )
 
-        self.date_list = dateArr2List(jq.get_trade_days(self.start_date,self.end_date))
+        self.date_list = self.UserDataApi.getTradeDays(self.start_date,self.end_date)
+        self.label_dict["date_index"] = dict(zip([i for i in range(len(self.date_list))],self.date_list))
 
     def createLabelAll(self,stock_list):
 
-        label_all = []
+        self.label_dict["label_all"] = dict()
         for date in self.date_list:
             daily_label = self.creatLabelByDate(date,stock_list)
-            label_all.append(np.array(daily_label))
+            self.label_dict["label_all"][date] = daily_label
 
-        return np.concatenate(tuple(label_all),axis= 0)
-
+        return self.label_dict
     # def createBatch(self,idx_list):
     #     for idx in idx_list:
     #         daily_feature = self.creatLabelByDate(date)
@@ -58,14 +56,11 @@ class Label(object):
     #     return np.concatenate(tuple(feature_all),axis= 0)
     
     def creatLabelByDate(self,date,stock_list):
-        label = []
+        label = dict()
         for creator in self.label_creator_list:
-            label_temp = creator.getLabelByDate(date,stock_list,self.date_index_dict,self.inverse_date_index_dict)
-            
-            label_temp = np.concatenate(tuple(label_temp),axis = -1)
-            label.append(label_temp)
-
-        return np.concatenate(tuple(label),axis = 0)
+            label_temp , label_name = creator.getLabelByDate(date,stock_list,self.date_index_dict,self.inverse_date_index_dict,self.UserDataApi)
+            label[label_name] = label_temp
+        return label
 
     def checkLabel():
         for creator in self.label_creator_list:
@@ -77,13 +72,14 @@ if __name__ == "__main__":
     from util.jq_init import login
     login()
 
-
+    from data_interface.data_api import UserDataApi
+    UserDataApi = UserDataApi()
     feature_cfg = "./config/feature_create_cfg.json"
     with open(feature_cfg,"r") as f:
         feature_cfg = json.load(f)
 
     stock_list = jq.get_industry_stocks('I64')
 
-    f = Label(feature_cfg,stock_list)
-    label_all = f.createLabelAll()
-    print (label_all.shape)
+    f = Label(feature_cfg,UserDataApi)
+    label_all = f.createLabelAll(stock_list)
+    print (label_all["label_all"]["2020-03-04"]["return"])

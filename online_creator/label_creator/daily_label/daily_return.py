@@ -6,54 +6,46 @@ from data_interface.data_api import UserDataApi
 
 reorder = False
 fields = ['open', 'close', 'low', 'high','factor', 'avg', 'pre_close', 'paused']
-def return_n_day(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,price_buffer):
-    date_index = date_index_dict[date]    
-    base_date = inverse_date_index_dict[date_index]    
-    base_price = query_and_buffer(base_date,stock_list,price_buffer)
-    #base_price = base_price.values[:,3]
-    
+
+
+def return_n_day(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi):
+    date_index = date_index_dict[date] 
+    base_date = inverse_date_index_dict[date_index ]
+    base_price_info, column_name_dic = UserDataApi.getPriceInfo(base_date,stock_list,fields = ["close"])
+    base_close_p = base_price_info[:,column_name_dic["close"]]
     re_return_f = []
     for var in params_list:
         future_date = inverse_date_index_dict[date_index + var]
-        future_price = query_and_buffer(future_date,stock_list,price_buffer)
-        
-        if reorder:
-            pass
-        else:
-            #future_price = future_price.values[:,3]
-            return_f = ((future_price - base_price)/base_price)[...,np.newaxis]
-        
-        #print ("return_f shape:",return_f.shape)
+        future_price_info, column_name_dic = UserDataApi.getPriceInfo(date_time = future_date,stock_code_list = stock_list,fields = ["close"])
+        future_close_p = future_price_info[:,column_name_dic["close"]]
+        return_f = ((future_close_p - base_close_p)/base_close_p)[...,np.newaxis]
         re_return_f.append(return_f)
-    return re_return_f
+
+    return np.concatenate(tuple(re_return_f),axis= -1)
 
 
-def query_and_buffer(date,stock_list,price_buffer):
+# def query_and_buffer(date,stock_list,price_buffer):
     
     
-    if date not in price_buffer.keys():
-        #p = jq.get_price(list(stock_list), start_date=date, end_date=date, frequency='daily', fields=fields, skip_paused=False, fq='pre', count=None, panel=False, fill_paused=True)
-        p = UserDataApi.getClosePrices(date,stock_list)
-        price_buffer[date] = p
+#     if date not in price_buffer.keys():
+#         p = UserDataApi.getClosePrices(date,stock_list)
+#         price_buffer[date] = p
 
-    return price_buffer[date]
+#     return price_buffer[date]
 
 class DailyReturn(DailyLabelBase):
-    def __init__(self,cfg):
-        self.params_list = cfg
+    def __init__(self,key,params_list):
+        self.params_list = params_list
+        self.name = key
 
 
-    def getLabelByDate(self,date,stock_list,date_index_dict,inverse_date_index_dict):
+    def getLabelByDate(self,date,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi):
         
-        labels  = []
-        price_buffer = dict()
-        #print (self.cfg)
-        labels = return_n_day(date,self.params_list,stock_list,date_index_dict,inverse_date_index_dict,price_buffer)
 
-        return labels
+        labels = return_n_day(date,self.params_list,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi)
+
+        return labels , self.name
     
-    def pReturn(self,date,stock_list,date_index_dict):
-        pass
     
     def groupOp(self,feature,didx):
         pass
