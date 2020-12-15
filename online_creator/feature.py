@@ -37,7 +37,8 @@ class Feature(object):
     
 
     def initDateIndexDict(self,early_date,last_date):
-        self.trade_date_list = UserDataApi.getTradeDays(early_date,last_date)
+        #pri)nt (early_date,last_date
+        self.trade_date_list = self.UserDataApi.getTradeDays(early_date,last_date)
         self.date_index_dict = list2Dic(self.trade_date_list)
         self.inverse_date_index_dict = invert_dict(self.date_index_dict )
 

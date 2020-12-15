@@ -32,7 +32,7 @@ class Label(object):
         self.initDateIndexDict(early_date,last_date)
 
     def initDateIndexDict(self,early_date,last_date):
-        self.trade_date_list = UserDataApi.getTradeDays(early_date,last_date)
+        self.trade_date_list = self.UserDataApi.getTradeDays(early_date,last_date)
         self.date_index_dict = list2Dic(self.trade_date_list)
         self.inverse_date_index_dict = invert_dict(self.date_index_dict )
 
@@ -45,7 +45,7 @@ class Label(object):
         for date in self.date_list:
             daily_label = self.creatLabelByDate(date,stock_list)
             self.label_dict["label_all"][date] = daily_label
-            self.label_dict["label_all"][date]["valid_index"] = UserDataApi.getSuspensionInfor(date,stock_list)
+            self.label_dict["label_all"][date]["valid_index"] = self.UserDataApi.getSuspensionInfor(date,stock_list)
 
         return self.label_dict
     # def createBatch(self,idx_list):

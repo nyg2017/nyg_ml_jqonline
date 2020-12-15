@@ -30,7 +30,8 @@ class JqLocMongoDB(object):
         self.all_security_table.insertInfo(start_date,end_date)
 
     def deleteDB(self,):
-        self.database.dropDatabase()
+        self.database.command("dropDatabase")
+        print ("empty_tables:",self.database.list_collection_names(session=None))
         print (self.database)
 
     def initJq(self,):
@@ -53,7 +54,7 @@ if __name__ == "__main__":
     a = JqLocMongoDB()
     start_date = "2020-01-01"
     end_date = "2020-11-30"
-    #a.deleteDB()
+    a.deleteDB()
     a.updateTables(start_date,end_date)
     
     #@stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE',"asd","adgagasdg"]
