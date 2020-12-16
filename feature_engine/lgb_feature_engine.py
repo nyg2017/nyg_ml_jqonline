@@ -13,6 +13,6 @@ class LgbFeatureEngine(BaseFeatureEngine):
     def initOperation(self,cfg):
         op_list = []
         for key in cfg.keys():
-            op_list.append(self.operation_dic[key](cfg))
+            op_list.append(self.operation_dic[key](cfg[key]))
         
         return op_list

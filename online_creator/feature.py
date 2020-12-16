@@ -50,7 +50,11 @@ class Feature(object):
         self.feature_dict["feature_all"] = dict()
         for date in self.date_list:
             daily_feature = self.creatFeatureByDate(date,stock_list)
-            self.feature_dict["feature_all"][date] = daily_feature
+            self.feature_dict["feature_all"][date] = dict()
+            self.feature_dict["feature_all"][date]["info"] = daily_feature
+            self.feature_dict["feature_all"][date]["valid_index"] = self.UserDataApi.getSuspensionInfor(date,stock_list)
+        
+        return self.feature_dict
 
     def creatFeatureByDate(self,date,stock_list):
         feature = dict()

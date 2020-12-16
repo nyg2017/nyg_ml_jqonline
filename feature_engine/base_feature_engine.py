@@ -24,6 +24,6 @@ class BaseFeatureEngine(object):
         pass
 
     def run(self,feature,label):
-        for op in self.                                                 :
+        for op in self.operation:
             feature,label = op.run(feature,label)
         return feature,label

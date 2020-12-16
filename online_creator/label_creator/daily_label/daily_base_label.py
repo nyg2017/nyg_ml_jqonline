@@ -3,7 +3,9 @@ import os
 
 class DailyLabelBase(object):
 
-    def __init__(self,cfg):
+    def __init__(self,cfg,key):
+        self.cfg = cfg
+        self.name = key
         pass
 
     def getFeatureByDate(self,date,stock_list,date_index_dict):

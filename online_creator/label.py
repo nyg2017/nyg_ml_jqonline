@@ -5,18 +5,18 @@ if __name__ == "__main__":
 import numpy as np
 import pandas as pd
 import jqdatasdk as jq
-from online_creator.label_creator.daily_label.daily_return import DailyReturn
+from online_creator.label_creator.daily_label.daily_price import DailyPrice
 from util.jqdata_processor import dateArr2List,list2Dic,invert_dict
 
 
 label_creator_dic = {
-    "return":DailyReturn,
+    "p":DailyPrice,
 }
 
 def init_label_list(feature_cfg):
     re_list = []
     for key in feature_cfg.keys():
-        re_list.append(label_creator_dic[key](key,feature_cfg[key]))
+        re_list.append(label_creator_dic[key](feature_cfg[key],key))
     return re_list
 
 
@@ -44,7 +44,8 @@ class Label(object):
         self.label_dict["label_all"] = dict()
         for date in self.date_list:
             daily_label = self.creatLabelByDate(date,stock_list)
-            self.label_dict["label_all"][date] = daily_label
+            self.label_dict["label_all"][date] = dict()
+            self.label_dict["label_all"][date]["info"] = daily_label
             self.label_dict["label_all"][date]["valid_index"] = self.UserDataApi.getSuspensionInfor(date,stock_list)
 
         return self.label_dict

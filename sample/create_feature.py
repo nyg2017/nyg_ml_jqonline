@@ -24,11 +24,10 @@ def create_feature(feature_cfg):
     
     feature_dict = feature_creator.createFeatureAll(stock_list)
     label_dict = label_creator.createLabelAll(stock_list)
-    
     feature_enginer = build_feature_engine("lgb",feature_cfg["engine_cfg"])
 
     feature ,label = feature_enginer.run(feature_dict,label_dict)
-    print (feature,label)
+    #print (feature,label)
 
 
 

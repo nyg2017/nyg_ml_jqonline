@@ -33,18 +33,20 @@ def return_n_day(date,params_list,stock_list,date_index_dict,inverse_date_index_
 
 #     return price_buffer[date]
 
-class DailyReturn(DailyLabelBase):
-    def __init__(self,key,params_list):
-        self.params_list = params_list
-        self.name = key
+func_dic = {
+    "return":return_n_day
+}
+
+class DailyPrice(DailyLabelBase):
+    def __init__(self,cfg,key):
+        super(DailyPrice,self).__init__(cfg,key)
 
 
     def getLabelByDate(self,date,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi):
-        
-
-        labels = return_n_day(date,self.params_list,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi)
-
-        return labels , self.name
+        labels = dict()
+        for key,params_list in self.cfg.items():
+            labels[key] = func_dic[key](date,params_list,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi)
+        return labels,self.name
     
     
     def groupOp(self,feature,didx):
