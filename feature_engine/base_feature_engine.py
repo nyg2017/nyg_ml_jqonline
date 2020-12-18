@@ -23,7 +23,8 @@ class BaseFeatureEngine(object):
     def initOperation(self,cfg):
         pass
 
-    def run(self,feature,label):
+    def run(self,info_dic):
         for op in self.operation:
-            feature,label = op.run(feature,label)
-        return feature,label
+            info_dic = op.run(info_dic)
+        
+        return self.post_process(info_dic)

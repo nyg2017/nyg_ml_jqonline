@@ -7,5 +7,5 @@ class Discret(BaseModule):
         super(Discret, self).__init__(cfg)
 
         
-    def run(self,feature,label):
-        return feature,label
+    def run(self,info_dict):
+        return info_dict

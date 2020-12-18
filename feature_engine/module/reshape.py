@@ -26,7 +26,12 @@ class Reshape(BaseModule):
         arr_1[~index] = value
         return arr_1
 
-    def run(self,feature,label = None):
+    def run(self,info_dict):
+        feature = info_dict["feature"]
+        if "label" not in info_dict.keys():
+            label = None
+        else:
+            label = info_dict["label"]
         re_feature = []
         re_feature_valid_index =[]
         feature_date_key_index = feature["date_index"]
@@ -37,7 +42,7 @@ class Reshape(BaseModule):
         
         re_feature = np.array(re_feature)
         re_feature_valid_index = np.array(re_feature_valid_index)
-        re_feature = self.valid_filter_value(re_feature,re_feature_valid_index,self.cfg["valid_filter_value"])
+        #re_feature = self.valid_filter_value(re_feature,re_feature_valid_index,self.cfg["valid_filter_value"])
 
         if not (label is None):
             re_label = []
@@ -52,7 +57,7 @@ class Reshape(BaseModule):
 
             re_label = np.array(re_label)
             re_label_valid_index = np.array(re_label_valid_index)
-            re_label = self.valid_filter_value(re_label,re_label_valid_index,self.cfg["valid_filter_value"])
+            #re_label = self.valid_filter_value(re_label,re_label_valid_index,self.cfg["valid_filter_value"])
 
  
         if self.cfg["main_dim"] == "stock":
@@ -64,5 +69,12 @@ class Reshape(BaseModule):
 
             else:
                 re_label = None
-
-        return re_feature,re_label
+                re_label_valid_index = None
+        
+        re_info_dict = {
+            "feature":re_feature,
+            "label":re_label,
+            "re_feature_valid_index":re_feature_valid_index,
+            "re_label_valid_index":re_label_valid_index
+        }
+        return re_info_dict

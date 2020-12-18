@@ -26,7 +26,11 @@ def create_feature(feature_cfg):
     label_dict = label_creator.createLabelAll(stock_list)
     feature_enginer = build_feature_engine("lgb",feature_cfg["engine_cfg"])
 
-    feature ,label = feature_enginer.run(feature_dict,label_dict)
+    info_dict = {
+        "feature":feature_dict,
+        "label":label_dict
+    }
+    info_dict = feature_enginer.run(info_dict)
     #print (feature,label)
 
 

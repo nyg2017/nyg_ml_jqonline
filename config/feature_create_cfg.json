@@ -31,14 +31,12 @@
         },
         "nan_to_num":
         {
-            "X":1,
-            "x_fill":0.0,
-            "nan_fill_value":"nan",
-            "Y":1
+            "x_fill_value":-999,
+            "y_fill_value":-999
+
         },
         "clip":
         {
-            "max_value":1.1,
             "clip_value":0.09
         }
     }
