@@ -49,10 +49,10 @@ class Feature(object):
 
         self.feature_dict["feature_all"] = dict()
         for date in self.date_list:
-            daily_feature = self.creatFeatureByDate(date,stock_list)
-            self.feature_dict["feature_all"][date] = dict()
-            self.feature_dict["feature_all"][date]["info"] = daily_feature
-            self.feature_dict["feature_all"][date]["valid_index"] = self.UserDataApi.getSuspensionInfor(date,stock_list)
+            daily_feature_info= self.creatFeatureByDate(date,stock_list)
+            self.feature_dict["feature_all"][date] = daily_feature_info
+            # self.feature_dict["feature_all"][date]["info"] = daily_feature
+            # self.feature_dict["feature_all"][date]["valid_index"] = valid_index
         
         return self.feature_dict
 
@@ -61,8 +61,16 @@ class Feature(object):
         for creator in self.feature_creator_list:
             feature_temp,feature_name = creator.getFeatureByDate(date,stock_list,self.date_index_dict,self.inverse_date_index_dict,self.UserDataApi)
             feature[feature_name] = feature_temp
-     
-        return feature
+        valid_index = self.UserDataApi.getSuspensionInfor(date,stock_list)
+        feature_daily_info = {"info":feature,"valid_index":valid_index}
+        return feature_daily_info
+
+    def creatDailyFeature(self,date,stock_list):
+        daily_feature_dict = dict()
+        daily_feature_dict["feature_all"] = dict()
+        daily_feature_dict["feature_all"][date] = self.creatFeatureByDate(date,stock_list)
+        daily_feature_dict["date_index"] = {0:date}
+        return daily_feature_dict
 
     def checkFeature():
         for creator in self.feature_creator_list:

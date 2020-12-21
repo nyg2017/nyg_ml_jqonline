@@ -9,3 +9,6 @@ class Discret(BaseModule):
         
     def run(self,info_dict):
         return info_dict
+    
+    def run_test(self,info_dict):
+        return info_dict

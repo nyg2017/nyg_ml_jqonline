@@ -7,7 +7,10 @@ class BaseModule(object):
     def __init__(self,cfg):
         self.cfg = cfg
 
-    def run(self,feature,label):
+    def run(self,info_dict):
+        pass
+
+    def run_test(self,info_dict):
         pass
 
 

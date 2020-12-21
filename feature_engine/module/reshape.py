@@ -57,9 +57,11 @@ class Reshape(BaseModule):
 
             re_label = np.array(re_label)
             re_label_valid_index = np.array(re_label_valid_index)
+        else:
+            re_label = None
+            re_label_valid_index = None
             #re_label = self.valid_filter_value(re_label,re_label_valid_index,self.cfg["valid_filter_value"])
-
- 
+         
         if self.cfg["main_dim"] == "stock":
             re_feature = np.transpose(re_feature,(1,0,2))
             re_feature_valid_index = np.transpose(re_feature_valid_index,(1,0))
@@ -67,9 +69,7 @@ class Reshape(BaseModule):
                 re_label = np.transpose(re_label,(1,0,2))
                 re_label_valid_index = np.transpose(re_label_valid_index,(1,0))
 
-            else:
-                re_label = None
-                re_label_valid_index = None
+
         
         re_info_dict = {
             "feature":re_feature,
@@ -78,3 +78,6 @@ class Reshape(BaseModule):
             "re_label_valid_index":re_label_valid_index
         }
         return re_info_dict
+
+    def run_test(self,info_dict):
+        return self.run(info_dict)

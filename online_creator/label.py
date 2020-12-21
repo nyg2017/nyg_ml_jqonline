@@ -43,26 +43,29 @@ class Label(object):
 
         self.label_dict["label_all"] = dict()
         for date in self.date_list:
-            daily_label = self.creatLabelByDate(date,stock_list)
-            self.label_dict["label_all"][date] = dict()
-            self.label_dict["label_all"][date]["info"] = daily_label
-            self.label_dict["label_all"][date]["valid_index"] = self.UserDataApi.getSuspensionInfor(date,stock_list)
+            daily_label_info = self.creatLabelByDate(date,stock_list)
+            self.label_dict["label_all"][date] = daily_label_info
+            # self.label_dict["label_all"][date]["info"] = daily_label
+            # self.label_dict["label_all"][date]["valid_index"] = valid_index
 
         return self.label_dict
-    # def createBatch(self,idx_list):
-    #     for idx in idx_list:
-    #         daily_feature = self.creatLabelByDate(date)
-            
-    #         feature_all.append(daily_feature)
-        
-    #     return np.concatenate(tuple(feature_all),axis= 0)
-    
+
     def creatLabelByDate(self,date,stock_list):
         label = dict()
         for creator in self.label_creator_list:
             label_temp , label_name = creator.getLabelByDate(date,stock_list,self.date_index_dict,self.inverse_date_index_dict,self.UserDataApi)
             label[label_name] = label_temp
-        return label
+        valid_index = self.UserDataApi.getSuspensionInfor(date,stock_list)
+
+        daily_label_info = {"info":label,"valid_index":valid_index}
+        return daily_label_info
+
+    def creatDailyLabel(self,date,stock_list):
+        daily_label_dict = dict()
+        daily_label_dict["label_all"] = dict()
+        daily_label_dict["label_all"][date] = self.creatLabelByDate(date,stock_list)
+        daily_label_dict["date_index"] = {0:date}
+        return daily_label_dict
 
     def checkLabel():
         for creator in self.label_creator_list:

@@ -13,3 +13,6 @@ class NanToNum(BaseModule):
         if not (info_dict["label"] is None):
             info_dict["label"][np.isnan(info_dict["label"])] = self.cfg["y_fill_value"]
         return info_dict
+    
+    def run_test(self,info_dict):
+        return info_dict

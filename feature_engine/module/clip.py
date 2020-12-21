@@ -13,3 +13,6 @@ class Clip(BaseModule):
             index = label < clip_value
             info_dict["label_clip_index"] = index
         return info_dict
+    
+    def run_test(self,info_dict):
+        return info_dict
