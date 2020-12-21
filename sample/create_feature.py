@@ -15,10 +15,9 @@ buffered_feature = False
 
 
 
-def create_feature(feature_cfg):
+def create_feature(feature_cfg,stock_list):
     UserDataApi_ = UserDataApi()
-    stock_list = jq.get_industry_stocks('I64')
-    print (stock_list)
+    
     feature_creator = Feature(feature_cfg,UserDataApi_)
     label_creator = Label(feature_cfg,UserDataApi_)
     
@@ -31,12 +30,12 @@ def create_feature(feature_cfg):
         "label":label_dict
     }
     info_dict = feature_enginer.run(info_dict)
+    return info_dict
     #print (feature,label)
 
 
-def create_feature_daily(feature_cfg):
+def create_feature_daily(feature_cfg,stock_list):
     UserDataApi_ = UserDataApi()
-    stock_list = jq.get_industry_stocks('I64')
     feature_creator = Feature(feature_cfg,UserDataApi_)
     label_creator = Label(feature_cfg,UserDataApi_)
     feature_enginer = build_feature_engine("lgb",feature_cfg["engine_cfg"])
@@ -62,5 +61,6 @@ if __name__ == "__main__":
     feature_cfg = "./config/feature_create_cfg.json"
     with open(feature_cfg,"r") as f:
         feature_cfg = json.load(f)
-    
-    create_feature_daily(feature_cfg)
+    stock_list = jq.get_industry_stocks('I64')
+
+    create_feature_daily(feature_cfg,stock_list)
