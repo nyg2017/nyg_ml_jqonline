@@ -23,8 +23,8 @@ def train(train_cfg):
     model_name = train_cfg["model"]
     model_cfg = train_cfg["model_cfg"]
 
-    stock_list = jq.get_industry_stocks('I64')
-    print (stock_list)
+    stock_list = jq.get_index_stocks('000300.XSHG')#jq.get_industry_stocks('I64')
+    print (len(stock_list))
     feature_cfg = "./config/feature_create_cfg.json"
     with open(feature_cfg,"r") as f:
         feature_cfg = json.load(f)
