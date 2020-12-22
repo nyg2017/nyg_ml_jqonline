@@ -7,12 +7,11 @@ from back_test.employee.indextrader import IndexTrader
 from back_test.employee.inspector import Inspector
 from back_test.employee.painter import Painter
 from back_test.employee.analyst import Analyst
-from data_interface.data_api import UserDataApi
 
 
 
 class BaseBT(object):
-    def __init__(self,capital,base_index,fee_rate,slide_point,start_date,end_date,position_mode):
+    def __init__(self,capital,base_index,fee_rate,slide_point,start_date,end_date,position_mode,UserDataApi):
         self.capital = capital
         self.UserDataApi = UserDataApi
 
@@ -41,6 +40,10 @@ if __name__ == "__main__":
     #from back_test.data_interface.jq_data import login
     #import jqdatasdk as jq
     from data_interface.data_api import UserDataApi
+    from util.jq_init import login
+    import jqdatasdk as jq
+
+    login()
     #login()
     UserDataApi = UserDataApi()
     capital = 1000000
@@ -49,16 +52,17 @@ if __name__ == "__main__":
     fee_rate = 0.00005
     slide_point = 0.01
     start_date = "2020-01-01"
-    end_date = "2020-01-31"
+    end_date = "2020-07-31"
     trade_mode = "mean"
     total_position = 0.95
+    stock_list = jq.get_index_stocks('000300.XSHG')
     #stock_list = ['300031.XSHE', '002605.XSHE', '002467.XSHE', '000835.XSHE', '300052.XSHE', '300242.XSHE', '300226.XSHE', '002447.XSHE', '300295.XSHE', '600804.XSHG', '000503.XSHE', '300113.XSHE', '300043.XSHE', '300104.XSHE', '002095.XSHE']
-    stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE']
+    #stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE']
     from datetime import datetime, date
     from datetime import timedelta
     date_list = UserDataApi.getTradeDays(start_date=start_date, end_date=end_date)
 
-    bt = BaseBT(capital,base_index,fee_rate,slide_point,date_list[0],end_date,trade_mode)
+    bt = BaseBT(capital,base_index,fee_rate,slide_point,date_list[0],end_date,trade_mode,UserDataApi)
 
     for date in date_list:
         v = UserDataApi.validIndex(date,stock_list)
