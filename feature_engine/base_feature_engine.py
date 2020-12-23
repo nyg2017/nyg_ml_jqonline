@@ -24,9 +24,9 @@ class BaseFeatureEngine(object):
         pass
 
     def run(self,info_dic):
+
         for op in self.operation:
             info_dic = op.run(info_dic)
-        
         return self.post_process(info_dic)
     
     def run_test(self,info_dic):

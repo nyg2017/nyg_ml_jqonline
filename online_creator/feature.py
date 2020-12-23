@@ -49,6 +49,7 @@ class Feature(object):
 
         self.feature_dict["feature_all"] = dict()
         for date in self.date_list:
+            print ("generate feature:",date)
             daily_feature_info= self.creatFeatureByDate(date,stock_list)
             self.feature_dict["feature_all"][date] = daily_feature_info
             # self.feature_dict["feature_all"][date]["info"] = daily_feature

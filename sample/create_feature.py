@@ -29,27 +29,37 @@ def create_feature(feature_cfg,stock_list):
         "feature":feature_dict,
         "label":label_dict
     }
+
     info_dict = feature_enginer.run(info_dict)
+
     return info_dict
     #print (feature,label)
 
 
-def create_feature_daily(feature_cfg,stock_list):
-    UserDataApi_ = UserDataApi()
-    feature_creator = Feature(feature_cfg,UserDataApi_)
-    label_creator = Label(feature_cfg,UserDataApi_)
-    feature_enginer = build_feature_engine("lgb",feature_cfg["engine_cfg"])
+# def create_feature_daily(feature_cfg,stock_list,UserDataApi_):
+#     feature_creator = Feature(feature_cfg,UserDataApi_)
+#     label_creator = Label(feature_cfg,UserDataApi_)
+#     feature_enginer = build_feature_engine("lgb",feature_cfg["engine_cfg"])
 
 
-    start_date = feature_cfg["start"]
-    end_date = feature_cfg["end"]
+#     start_date = feature_cfg["start"]
+#     end_date = feature_cfg["end"]
 
-    for date in UserDataApi_.getTradeDays(start_date = start_date,end_date = end_date):
-        daily_feature_info = feature_creator.creatDailyFeature(date,stock_list)
-        daily_label_info = label_creator.creatDailyLabel(date,stock_list)
-        info_dict = {"feature":daily_feature_info,"label":None}
-        info_dict = feature_enginer.run_test(info_dict)
-        print (info_dict.keys(),info_dict["feature"].shape,info_dict["re_feature_valid_index"].shape)
+#     for date in UserDataApi_.getTradeDays(start_date = start_date,end_date = end_date):
+#         daily_feature_info = feature_creator.creatDailyFeature(date,stock_list)
+#         daily_label_info = label_creator.creatDailyLabel(date,stock_list)
+#         info_dict = {"feature":daily_feature_info,"label":None}
+#         info_dict = feature_enginer.run_test(info_dict)
+#         print (info_dict.keys(),info_dict["feature"].shape,info_dict["re_feature_valid_index"].shape)
+
+
+def create_feature_daily(date,stock_list,feature_creator,label_creator,feature_enginer,UserDataApi):
+    daily_feature_info = feature_creator.creatDailyFeature(date,stock_list)
+    daily_label_info = label_creator.creatDailyLabel(date,stock_list)
+    info_dict = {"feature":daily_feature_info,"label":daily_label_info}
+    info_dict = feature_enginer.run_test(info_dict)
+    return info_dict
+    #print (info_dict.keys(),info_dict["feature"].shape,info_dict["re_feature_valid_index"].shape)
 
 
 

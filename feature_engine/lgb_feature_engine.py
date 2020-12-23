@@ -29,7 +29,7 @@ class LgbFeatureEngine(BaseFeatureEngine):
         feature = feature.reshape(-1,feature.shape[-1])
         re_feature_valid_index = re_feature_valid_index.reshape(-1)
         #feature = feature[re_feature_valid_index]
-        if not (label is None):
+        if not (label is None) and train_test == "train":
             label_clip_index = info_dict["label_clip_index"]
             label[label_clip_index] = 0.0
             label = label.reshape(-1,label.shape[-1])

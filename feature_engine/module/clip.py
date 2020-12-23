@@ -12,6 +12,7 @@ class Clip(BaseModule):
             clip_value = self.cfg["clip_value"]
             index = label < clip_value
             info_dict["label_clip_index"] = index
+
         return info_dict
     
     def run_test(self,info_dict):

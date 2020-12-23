@@ -54,13 +54,12 @@ def high_d_close(date,params_list,stock_list,date_index_dict,inverse_date_index_
     date_index = date_index_dict[date]    
     re_high_d_cps_f = []
     for var in params_list:
-        base_date = inverse_date_index_dict[date_index - var-1]
-        future_date = inverse_date_index_dict[date_index - var]
-        base_price_info, column_name_dic = UserDataApi.getPriceInfo(base_date,stock_list,fields = ["close"])
-        future_price_info, column_name_dic = UserDataApi.getPriceInfo(future_date,stock_list,fields = ["high"])
+        base_date = inverse_date_index_dict[date_index - var -1]
+        base_price_info, column_name_dic = UserDataApi.getPriceInfo(base_date,stock_list,fields = ["close","high"])
         base_close_p = base_price_info[:,column_name_dic["close"]]
-        future_close_p = future_price_info[:,column_name_dic["high"]]
-        high_d_cps_f = (future_close_p - base_close_p)/base_close_p
+        base_high_p = base_price_info[:,column_name_dic["high"]]
+
+        high_d_cps_f = (base_high_p - base_close_p)/base_close_p
         re_high_d_cps_f.append(high_d_cps_f.reshape(-1,1)) 
     
     return np.concatenate(tuple(re_high_d_cps_f),axis= -1)

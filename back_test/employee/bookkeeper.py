@@ -1,5 +1,5 @@
 
-
+import math
 
 class BookKeeper(object):
     def __init__(self,ori_capital,start_date):
@@ -74,6 +74,8 @@ class BookKeeper(object):
     def updateAccountInfo(self,stock_price_dict):
         stock_total_value = 0
         for k,v in self.account[self.index-1]['hold_state'].items():
+            if math.isnan(stock_price_dict[k]):
+                stock_price_dict[k] = v["market_price"]
             stock_total_value += stock_price_dict[k] * v['hold_num']
         
         self.capital = stock_total_value + self.cash

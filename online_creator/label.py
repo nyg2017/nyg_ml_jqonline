@@ -43,6 +43,7 @@ class Label(object):
 
         self.label_dict["label_all"] = dict()
         for date in self.date_list:
+            print ("processing label:",date)
             daily_label_info = self.creatLabelByDate(date,stock_list)
             self.label_dict["label_all"][date] = daily_label_info
             # self.label_dict["label_all"][date]["info"] = daily_label
@@ -54,6 +55,7 @@ class Label(object):
         label = dict()
         for creator in self.label_creator_list:
             label_temp , label_name = creator.getLabelByDate(date,stock_list,self.date_index_dict,self.inverse_date_index_dict,self.UserDataApi)
+
             label[label_name] = label_temp
         valid_index = self.UserDataApi.getSuspensionInfor(date,stock_list)
 
