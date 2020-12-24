@@ -65,6 +65,7 @@ def SumNDayturnover(date,params_list,stock_list,date_index_dict,inverse_date_ind
     date_index = date_index_dict[date] 
     end_date = inverse_date_index_dict[date_index - 1]
     start_date = inverse_date_index_dict[date_index - max_n]
+
     mul_day_turnover_ratio = UserDataApi.getMulDayTurnoverRatio(start_date = start_date,end_date = end_date,stock_list = stock_list,fields = ["turnover_ratio"])
     include_date_list = [inverse_date_index_dict[date_index - i] for i in range(1,max_n + 1)]
 
@@ -95,7 +96,7 @@ def SumNDayturnover(date,params_list,stock_list,date_index_dict,inverse_date_ind
         #print (sum_n_turnover[:,i])
 
 
-    return sum_n_turnover.reshape((len(stock_list),max_n))
+    return sum_n_turnover.reshape((len(stock_list),len(params_list)))
 
 
 func_dic = {

@@ -21,13 +21,13 @@ end_date = '2019-12-31'
 
 def initBackTest(start_date,end_date,UserDataApi):
     capital = 1000000
-    base_index = '000001.XSHG'
+    base_index = '000300.XSHG'
     fee_rate = 0.0005
     slide_point = 0.01
     start_date = start_date
     end_date = end_date
-    position_mode = "part"
-    total_position = 0.95
+    position_mode = "mean"
+    total_position = 1.00
     bt = BaseBT(capital,base_index,fee_rate,slide_point,start_date,end_date,position_mode,UserDataApi)
     return bt
 
@@ -62,7 +62,7 @@ def predictBacktest(train_cfg):
     
     
 
-    for date in date_list[24:]:
+    for date in date_list:
         info = create_feature_daily(date,stock_list,feature_creator,label_creator,feature_enginer,UserDataApi_)        
         feature_per_day = info["feature"]
         label_per_day = info["label"]
@@ -71,8 +71,8 @@ def predictBacktest(train_cfg):
         stock_list_temp = np.array(stock_list)[v]
         prediction = prediction[v]
         
-        prediction = label_per_day[0,:,0][v]
-        #prediction_ = np.nan_to_num(prediction)
+        #prediction = label_per_day[0,:,0][v]
+        prediction = np.nan_to_num(prediction)
         #v =  ~(prediction == prediction_)
         #prediction[v] = 0.0
         #index = prediction > aver
@@ -80,9 +80,9 @@ def predictBacktest(train_cfg):
         #prediction = prediction[index]
         bt.run(date,stock_list_temp,prediction,0.9)
         print ("date:",date,"capital:",bt.bookkeeper.capital)
-        if date == "2020-03-09":
-            print (prediction)
-            exit()
+        # if date == "2020-03-11":
+        #     print (prediction)
+        #     exit()
     if not buffered_feature:
         np.save("./DATA/buffer/feature_for_prediction.npy",feature_dic)
 

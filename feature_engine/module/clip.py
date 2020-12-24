@@ -11,6 +11,7 @@ class Clip(BaseModule):
             label = np.abs(info_dict["label"])
             clip_value = self.cfg["clip_value"]
             index = label < clip_value
+
             info_dict["label_clip_index"] = index
 
         return info_dict

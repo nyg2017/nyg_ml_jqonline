@@ -16,7 +16,7 @@ def expPosition(stock_score):
     position = stock_exp/ np.sum(stock_exp)
     return position
 
-def partPosition(stock_score,precent = 0.5):
+def partPosition(stock_score,precent = 0.05):
     stock_exp = np.exp(standardization(stock_score).astype(np.float64))
     mid = np.median(stock_exp)
     stock_exp[stock_exp < mid] = 0.0

@@ -23,18 +23,24 @@ def train(train_cfg):
     model_name = train_cfg["model"]
     model_cfg = train_cfg["model_cfg"]
 
-    stock_list = jq.get_index_stocks('000300.XSHG')#jq.get_industry_stocks('I64')
+    #stock_list = jq.get_index_stocks('000300.XSHG')#jq.get_industry_stocks('I64')
+    stock_list = jq.get_all_securities().index.tolist()
     feature_cfg = "./config/feature_create_cfg.json"
     with open(feature_cfg,"r") as f:
         feature_cfg = json.load(f)
 
-    info = create_feature(feature_cfg,stock_list)
-
-    model = build_model(model_name,model_cfg)
+    info = create_feature(feature_cfg,stock_list,if_dump = True,load_feature = False)
     feature = info["feature"]
     label = info["label"]
+    label_index = 0
 
-    model.fit(feature,label[:,1])
+    clip_index = info["label_clip_index"][:,label_index]
+    label = label[:,label_index] 
+    feature = feature[clip_index]
+    label = label[clip_index]
+    
+    model = build_model(model_name,model_cfg)
+    model.fit(feature,label)
     model.dump()
 
     #feature_cfg = "./config/feature_create_cfg.json"

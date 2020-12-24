@@ -11,11 +11,24 @@ import jqdatasdk as jq
 from feature_engine.feature_engine_build import build_feature_engine
 
 buffered_feature = False
+buffer_feature_path = "/home/tal100/github/data/feature.pkl"
 
 
 
+import pickle
 
-def create_feature(feature_cfg,stock_list):
+def save_obj(obj, path ):
+    with open(path, 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+def load_obj(path ):
+    with open(path, 'rb') as f:
+        return pickle.load(f)
+
+def create_feature(feature_cfg,stock_list,if_dump = False,load_feature = False):
+    if load_feature:
+        return load_obj(buffer_feature_path)
+
     UserDataApi_ = UserDataApi()
     
     feature_creator = Feature(feature_cfg,UserDataApi_)
@@ -31,7 +44,8 @@ def create_feature(feature_cfg,stock_list):
     }
 
     info_dict = feature_enginer.run(info_dict)
-
+    if if_dump == True:
+        save_obj(info_dict,buffer_feature_path)
     return info_dict
     #print (feature,label)
 
