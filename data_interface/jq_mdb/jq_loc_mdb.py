@@ -5,7 +5,7 @@ from data_interface.jq_mdb.table.index_table import IndexTable
 from data_interface.jq_mdb.table.turnover_ratio_table import TurnOverRatioTable
 from data_interface.jq_mdb.table.trade_days_table import TradeDayTable
 from data_interface.jq_mdb.table.all_security_table import AllSecurityTable
-
+from data_interface.jq_mdb.table.unfq_price_table import UnfqPriceTable
 
 class JqLocMongoDB(object):
     def __init__(self,):
@@ -20,6 +20,7 @@ class JqLocMongoDB(object):
         self.turnover_ratio_table = TurnOverRatioTable(self.database,"turnover_ratio_table")
         self.trade_days_table = TradeDayTable(self.database,"trade_days_table")
         self.all_security_table = AllSecurityTable(self.database,"all_security_table")
+        self.unfq_price_table = UnfqPriceTable(self.database,"unfq_price_table")
 
 
     def updateTables(self,start_date,end_date):
@@ -28,6 +29,8 @@ class JqLocMongoDB(object):
         self.turnover_ratio_table.insertInfo(start_date,end_date)
         self.trade_days_table.insertInfo(start_date,end_date)
         self.all_security_table.insertInfo(start_date,end_date)
+        self.unfq_price_table.insertInfo(start_date,end_date)
+
 
     def deleteDB(self,):
         self.database.command("dropDatabase")
@@ -56,7 +59,7 @@ if __name__ == "__main__":
     end_date = "2020-11-30"
     a.deleteDB()
     a.updateTables(start_date,end_date)
-    
+    #a.unfq_price_table.insertInfo(start_date,end_date)
     #@stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE',"asd","adgagasdg"]
     #a.price_table.getPriceInfo(stock_list = stock_list,date = start_date,fields = "close")
     #r = a.price_table.fetch(start_date,stock_list,"close")

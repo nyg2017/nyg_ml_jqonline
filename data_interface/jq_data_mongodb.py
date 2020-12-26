@@ -11,7 +11,7 @@ from data_interface.jq_mdb.table.index_table import IndexTable
 from data_interface.jq_mdb.table.turnover_ratio_table import TurnOverRatioTable
 from data_interface.jq_mdb.table.trade_days_table import TradeDayTable
 from data_interface.jq_mdb.table.all_security_table import AllSecurityTable
-
+from data_interface.jq_mdb.table.unfq_price_table import UnfqPriceTable
 
 
 
@@ -36,8 +36,11 @@ class JqMdb(object):
         result = TradeDayTable.fetch_period_trade_days(self.database,start_date,end_date)
         return result
 
-    def getClosePrices(self,date_time,stock_code_list):
-        result = PriceTable.fetch_one_day_price(database = self.database, date = date_time,stock_list = stock_code_list,fields = ['close'])
+    def getClosePrices(self,date_time,stock_code_list,fq = True):
+        if fq == False:
+            result = UnfqPriceTable.fetch_one_day_price(database = self.database, date = date_time,stock_list = stock_code_list,fields = ['close'])
+        else:
+            result = PriceTable.fetch_one_day_price(database = self.database, date = date_time,stock_list = stock_code_list,fields = ['close'])
         #result = jq.get_price(list(stock_code_list), start_date=date_time, end_date=date_time, frequency='daily', fields=['close'], skip_paused=False, fq='pre', count=None, panel=True, fill_paused=True)
         code = list(result['code'])
         cps = list(result['close'])
@@ -45,8 +48,11 @@ class JqMdb(object):
         res = paddingNoCode(stock_code_list,code_cps_dict)
         return res
 
-    def getPriceInfo(self,date_time,stock_code_list,fields = None):
-        result = PriceTable.fetch_one_day_price(database = self.database, date = date_time,stock_list = stock_code_list,fields = fields)
+    def getPriceInfo(self,date_time,stock_code_list,fields = None,fq = True):
+        if fq == False:
+            result = UnfqPriceTable.fetch_one_day_price(database = self.database, date = date_time,stock_list = stock_code_list,fields = fields)
+        else:
+            result = PriceTable.fetch_one_day_price(database = self.database, date = date_time,stock_list = stock_code_list,fields = fields)
         result,col_name_dic = df2Array(stock_code_list,result)
         return result,col_name_dic
 
@@ -125,7 +131,19 @@ class JqMdb(object):
 
 if __name__ == "__main__":
     jq_loc = JqMdb()
-    date = "2020-02-24"
-    stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE','slkhjf']
-    a,name = jq_loc.getPriceInfo(date,stock_list)
+    # date = "2020-02-24"
+    # stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE','slkhjf']
+    # a,name = jq_loc.getPriceInfo(date,stock_list)
+
+    code = ['300014.XSHE']
+    date_time = "2020-02-11"
+    date_time_2 = "2020-02-12"
+    #code = ['002100.XSHE']
+    #a = jq.get_price(list(code), start_date=date_time, end_date=date_time, frequency='daily', fields=['high','low'], skip_paused=False, fq='pre', count=None, panel=True, fill_paused=True)
+    p = jq_loc.getClosePrices(date_time = date_time,stock_code_list = code)
+    print (p)
+    p = jq_loc.getClosePrices(date_time = date_time_2,stock_code_list = code)
+    print (p)
+    # 43.55
+    # 39.20
     print (a.shape[1],len(name))

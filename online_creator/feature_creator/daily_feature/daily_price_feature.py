@@ -25,8 +25,11 @@ def var(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,User
     for var in params_list:
         base_date = inverse_date_index_dict[date_index - var-1]
         future_date = inverse_date_index_dict[date_index - var]
-        base_price_info, column_name_dic = UserDataApi.getPriceInfo(base_date,stock_list,fields = ["close"])
-        future_price_info, column_name_dic = UserDataApi.getPriceInfo(future_date,stock_list,fields = ["close"])
+        base_price_info, column_name_dic = UserDataApi.getPriceInfo(base_date,stock_list,fields = ["close"],fq = False)
+        future_price_info, column_name_dic = UserDataApi.getPriceInfo(future_date,stock_list,fields = ["close"],fq = False)
+        print (base_date,base_price_info,column_name_dic)
+        print (future_date,future_price_info,column_name_dic)
+        exit()
         base_close_p = base_price_info[:,column_name_dic["close"]]
         future_close_p = future_price_info[:,column_name_dic["close"]]
         var_f = (future_close_p - base_close_p)/base_close_p
@@ -37,13 +40,13 @@ def var(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,User
 def return_n_day(date,params_list,stock_list,date_index_dict,inverse_date_index_dict,UserDataApi):
     date_index = date_index_dict[date]    
     future_date = inverse_date_index_dict[date_index - 1]    
-    future_price_info, column_name_dic = UserDataApi.getPriceInfo(future_date,stock_list,fields = ["close"])
+    future_price_info, column_name_dic = UserDataApi.getPriceInfo(future_date,stock_list,fields = ["close"],fq = False)
     future_close_p = future_price_info[:,column_name_dic["close"]]
 
     re_return_f = []
     for var in params_list:
         base_date = inverse_date_index_dict[date_index - var-1]
-        base_price_info, column_name_dic = UserDataApi.getPriceInfo(base_date,stock_list,fields = ["close"])
+        base_price_info, column_name_dic = UserDataApi.getPriceInfo(base_date,stock_list,fields = ["close"],fq = False)
         base_close_p = base_price_info[:,column_name_dic["close"]]
         return_f = ((future_close_p - base_close_p)/base_close_p)[...,np.newaxis]
         re_return_f.append(return_f)
@@ -55,7 +58,7 @@ def high_d_close(date,params_list,stock_list,date_index_dict,inverse_date_index_
     re_high_d_cps_f = []
     for var in params_list:
         base_date = inverse_date_index_dict[date_index - var -1]
-        base_price_info, column_name_dic = UserDataApi.getPriceInfo(base_date,stock_list,fields = ["close","high"])
+        base_price_info, column_name_dic = UserDataApi.getPriceInfo(base_date,stock_list,fields = ["close","high"],fq = False)
         base_close_p = base_price_info[:,column_name_dic["close"]]
         base_high_p = base_price_info[:,column_name_dic["high"]]
 
