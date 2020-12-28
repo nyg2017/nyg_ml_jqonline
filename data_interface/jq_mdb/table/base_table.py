@@ -17,7 +17,8 @@ class BaseTable(object):
         self.table.command("dropDatabase")
         print ("price table deleted")
 
-
+    def dropIndex(self):
+        self.table.drop_index()
     
     def insertInfo(self,):
         pass

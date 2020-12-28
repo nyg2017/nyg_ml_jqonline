@@ -26,7 +26,7 @@ def initBackTest(start_date,end_date,UserDataApi):
     slide_point = 0.01
     start_date = start_date
     end_date = end_date
-    position_mode = "mean"
+    position_mode = "exp"
     total_position = 1.00
     bt = BaseBT(capital,base_index,fee_rate,slide_point,start_date,end_date,position_mode,UserDataApi)
     return bt

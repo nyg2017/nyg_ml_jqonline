@@ -31,7 +31,7 @@ class IndexTable(BaseTable):
 
     def createIndex(self,):
         #self.table.getIndexes()
-        self.table.create_index([('date_stamp',1),('code',1)])
+        self.table.create_index([('date_stamp',1),('code',1)],unique = True)
         print (self.table.index_information())
 
 

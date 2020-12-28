@@ -14,6 +14,8 @@ class JqLocMongoDB(object):
         self.initTables()
         self.initJq()
 
+
+    
     def initTables(self,):
         self.price_table = PriceTable(self.database,"price_table")
         self.index_table = IndexTable(self.database,"index_table")
@@ -22,14 +24,30 @@ class JqLocMongoDB(object):
         self.all_security_table = AllSecurityTable(self.database,"all_security_table")
         self.unfq_price_table = UnfqPriceTable(self.database,"unfq_price_table")
 
+        self.tables = [self.price_table,self.index_table,self.turnover_ratio_table,self.trade_days_table,self.all_security_table,self.unfq_price_table]
+
 
     def updateTables(self,start_date,end_date):
-        self.price_table.insertInfo(start_date,end_date)
-        self.index_table.insertInfo(start_date,end_date)
-        self.turnover_ratio_table.insertInfo(start_date,end_date)
-        self.trade_days_table.insertInfo(start_date,end_date)
-        self.all_security_table.insertInfo(start_date,end_date)
-        self.unfq_price_table.insertInfo(start_date,end_date)
+
+        for table in self.tables:
+            table.insertInfo(start_date,end_date)
+        # self.price_table.insertInfo(start_date,end_date)
+        # self.index_table.insertInfo(start_date,end_date)
+        # self.turnover_ratio_table.insertInfo(start_date,end_date)
+        # self.trade_days_table.insertInfo(start_date,end_date)
+        # self.all_security_table.insertInfo(start_date,end_date)
+        # self.unfq_price_table.insertInfo(start_date,end_date)
+
+    def reset_index(self,):
+        for table in self.tables:
+            table.dropIndex()
+            table.createIndex()
+        # self.price_table.createIndex()
+        # self.index_table.createIndex()
+        # self.turnover_ratio_table.createIndex()
+        # self.trade_days_table.createIndex()
+        # self.all_security_table.createIndex()
+        # self.unfq_price_table.createIndex()
 
 
     def deleteDB(self,):
@@ -57,8 +75,9 @@ if __name__ == "__main__":
     a = JqLocMongoDB()
     start_date = "2020-01-01"
     end_date = "2020-11-30"
-    a.deleteDB()
-    a.updateTables(start_date,end_date)
+    #a.deleteDB()
+    #a.updateTables(start_date,end_date)
+    a.reset_index()
     #a.unfq_price_table.insertInfo(start_date,end_date)
     #@stock_list = ['300750.XSHE','300760.XSHE','300761.XSHE',"asd","adgagasdg"]
     #a.price_table.getPriceInfo(stock_list = stock_list,date = start_date,fields = "close")
