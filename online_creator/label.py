@@ -21,7 +21,7 @@ def init_label_list(feature_cfg):
 
 
 class Label(object):
-    def __init__(self,feature_cfg,UserDataApi,early_date = "2010-10-10",last_date = "2020-10-10"):
+    def __init__(self,feature_cfg,UserDataApi,early_date = "2020-01-01",last_date = "2020-11-30"):
         self.cfg = feature_cfg
         #self.stock_list = stock_list
         self.UserDataApi = UserDataApi

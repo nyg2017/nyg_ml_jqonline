@@ -4,6 +4,8 @@ import jqdatasdk as jq
 import pandas as pd
 import json
 from data_interface.jq_mdb.util.fromat import QA_util_date_stamp
+import time
+
 
 fields = ['open' , 'close' , 'low' , 'high' , 'volume' , 'money',\
      'factor' , 'high_limit','low_limit', 'avg', 'pre_close', 'paused', 'open_interest']
@@ -35,7 +37,6 @@ class UnfqPriceTable(BaseTable):
     @classmethod
     def fetch_one_day_price(cls,database,date,stock_list,fields = fields):
         table = database["unfq_price_table"]
-
         cursor = table.find(
             {
                 'code': {
@@ -51,6 +52,7 @@ class UnfqPriceTable(BaseTable):
             batch_size=10000
         )
         res = pd.DataFrame([item for item in cursor])
+
         return res
     
     @classmethod
